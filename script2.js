@@ -123,4 +123,3 @@ personalMovieDB.detectPersonalLvl();
 personalMovieDB.writeYourGenres();
 personalMovieDB.toogleVisibleMyDB();
 personalMovieDB.showMyDB();
-
