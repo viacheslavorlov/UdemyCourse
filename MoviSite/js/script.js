@@ -1,5 +1,5 @@
 'use strict';
-/* Задания на урок:
+/* Задания на урок I:
 
 1) Удалить все рекламные блоки со страницы (правая часть сайта)
 
@@ -13,7 +13,17 @@
 
 5) Добавить нумерацию выведенных фильмов */
 
-
+/* Задания на урок II:
+1) Реализовать функционал, что после заполнения формы и нажатия кнопки "Подтвердить" - 
+новый фильм добавляется в список. Страница не должна перезагружаться.
+Новый фильм должен добавляться в movieDB.movies.
+Для получения доступа к значению input - обращаемся к нему как input.value;
+P.S. Здесь есть несколько вариантов решения задачи, принимается любой, но рабочий.
+2) Если название фильма больше, чем 21 символ - обрезать его и добавить три точки
+3) При клике на мусорную корзину - элемент будет удаляться из списка (сложно)
+4) Если в форме стоит галочка "Сделать любимым" - в консоль вывести сообщение: 
+"Добавляем любимый фильм"
+5) Фильмы должны быть отсортированы по алфавиту */
 
 const movieDB = {
     movies: [
@@ -44,11 +54,11 @@ backgroundPromo.style.backgroundImage = `url("./img/bg.jpg")`;
 // добавить нумерацию фильмов
 // * мой рабочий метод)
 
-const listOfFilms = document.querySelectorAll('.promo__interactive-item');
-movieDB.movies.sort();
-listOfFilms.forEach((item, index) => item.textContent = `${index + 1}. ${movieDB.movies[index]} `);
+// const listOfFilms = document.querySelectorAll('.promo__interactive-item');
+// movieDB.movies.sort();
+// listOfFilms.forEach((item, index) => item.textContent = `${index + 1}. ${movieDB.movies[index]} `);
 
-//? метод Петреченко (сложнее)
+//? метод Петреченко (сложнее но поддерживает разное количество элементов)
 // const listOfFilms = document.querySelector('.promo__interactive-list');
 // listOfFilms.innerHTML = '';
 // movieDB.movies.sort();
@@ -59,3 +69,13 @@ listOfFilms.forEach((item, index) => item.textContent = `${index + 1}. ${movieDB
 //         </li>
 //     `;
 // });
+
+const inputForm = document.querySelector('.adding__input');
+const button = document.querySelector('button');
+
+
+button.addEventListener('click', (e) => {
+    if (e) {
+        movieDB.movies.push(inputForm.value);
+    }
+}, {once: true});

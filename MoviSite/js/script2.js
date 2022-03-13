@@ -92,9 +92,10 @@ function addListItem(e) {
     });
     inputFilm.value = '';
     const delItem = document.querySelectorAll('.delete');
-    delItem.forEach(item => {
+    delItem.forEach((item, i) => {
         item.addEventListener('click', (e) => {
-            item.remove();
+            item.parentElement.remove();
+            movieDB.movies.splice((i), 1);
         });
     });
 }
