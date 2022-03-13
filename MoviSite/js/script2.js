@@ -1,3 +1,4 @@
+'use strict';
 /* Задания на урок:
 
 1) Реализовать функционал, что после заполнения формы и нажатия кнопки "Подтвердить" - 
@@ -15,7 +16,10 @@ P.S. Здесь есть несколько вариантов решения з
 
 5) Фильмы должны быть отсортированы по алфавиту */
 
-'use strict';
+// document.addEventListener('DOMContentLoaded', () => {
+
+// });
+
 //переменные:
 const movieDB = {
     movies: [
@@ -30,80 +34,86 @@ const adv = document.querySelectorAll('.promo__adv img');
 const genre = document.querySelector('.promo__genre');
 const backgroundPromo = document.querySelector('.promo__bg');
 const listOfFilms = document.querySelector('.promo__interactive-list');
-const form = document.querySelector('.add');
+const form = document.querySelector('form.add');
 const inputFilm = document.querySelector('.adding__input');
 const button = document.querySelector('button');
 const inputFavorite = document.querySelector('input[type="checkbox"]');
-const delItems = document.querySelectorAll('.delete');
 
+
+
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const newFilm = inputFilm.value;
+    let favorite = inputFavorite.checked;
+    if (favorite) {
+        console.log('Добавляем любимый фильм');
+        favorite = false;
+    }
+
+    if (newFilm) {
+        movieDB.movies.push(newFilm);
+        arrSort(movieDB.movies);
+        createMovieList(movieDB.movies, listOfFilms);
+        e.target.reset();
+    }
+});
+
+//* Заполнить список фильмов
+// Список фильмов на странице сформировать на основании данных из этого JS файла.
+// Отсортировать их по алфавиту
+// добавить нумерацию фильмов
+const arrSort = (arr) => {
+    arr.sort();
+};
+
+function createMovieList(films, parent) {
+    parent.innerHTML = '';
+    arrSort(movieDB.movies);
+    films.forEach((item, i) => {
+        parent.innerHTML += `
+        <li class="promo__interactive-item">
+            ${i+1}. ${item = (item.length < 21) ? item : item.slice(0, 21) + '...'}
+            <div class="delete"></div>
+        </li>`;
+    });
+
+    document.querySelectorAll('.delete').forEach((btn, i) => {
+        btn.addEventListener('click', () => {
+            btn.parentElement.remove();
+            movieDB.movies.splice(i, 1);
+            createMovieList(films, parent);
+        });
+    });
+}
+
+createMovieList(movieDB.movies, listOfFilms);
 
 // убрать рекламу (скрыть)
 // document.querySelector('.promo__adv').style.display = 'none';
 // убрать рекламу (удалить, только рекламные блоки)
 
-adv.forEach(item => item.remove());
+const deletAddv = (arr) => {
+    arr.forEach(item => item.remove());
+};
+
+deletAddv(adv);
+
 
 // Изменить жанр фильма, поменять "комедия" на "драма"
-
-genre.textContent = 'ДРАМА';
-
 //Изменить задний фон постера с фильмом на изображение "bg.jpg".Оно лежит в папке img.
 //Реализовать только при помощи JS
-backgroundPromo.style.backgroundImage = `url("./img/bg.jpg")`;
-
-// Список фильмов на странице сформировать на основании данных из этого JS файла.
-// Отсортировать их по алфавиту
-// добавить нумерацию фильмов
-// * мой рабочий метод)
-// const listOfFilms = document.querySelectorAll('.promo__interactive-item');
-// movieDB.movies.sort();
-// listOfFilms.forEach((item, index) => item.textContent = `${index + 1}. ${movieDB.movies[index]} `);
-
-//* Заполнить список фильмов
-const writeListOfFilms = () => {
-    listOfFilms.innerHTML = '';
-    movieDB.movies.sort();
-    movieDB.movies.forEach((item, i) => {
-        listOfFilms.innerHTML += `
-        <li class="promo__interactive-item">${i+1}. ${item = (item.length < 21) ? item : item.slice(0, 21) + '...'}
-            <div class="delete"></div>
-        </li>`;
-    });
-    delItem();
+const makeChanges = () => {
+    genre.textContent = 'ДРАМА';
+    backgroundPromo.style.backgroundImage = `url("./img/bg.jpg")`;
 };
+makeChanges();
 
-const delItem = () => {
-    delItems.forEach((item, i) => {
-        item.addEventListener('click', () => {
-            item.parentElement.remove();
-            movieDB.movies.splice(i, 1);
-        });
-    });
-};
 
-writeListOfFilms();
 
-button.addEventListener('click', addListItem);
 
-function addListItem(e) {
-    e.preventDefault();
 
-    if (inputFavorite.checked) {
-        console.log('Добавляем любимый фильм');
-        inputFavorite.checked = false;
-    }
-    movieDB.movies.forEach((item, i) => {
-        listOfFilms.innerHTML += `
-            <li class="promo__interactive-item">${i+1}. ${item = (item.length < 21) ? item : item.slice(0, 21) + '...'}
-                <div class="delete"></div>
-            </li>`;
-    });
-    inputFilm.value = '';
-    const delItem = document.querySelectorAll('.delete');
-    delItem.forEach((item, i) => {
-        item.addEventListener('click', (e) => {
-            item.parentElement.remove();
-            movieDB.movies.splice((i), 1);
-        });
-    });
-}
+
+
+
+
