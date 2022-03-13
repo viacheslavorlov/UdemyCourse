@@ -92,7 +92,18 @@ function addListItem(e) {
         console.log('Добавляем любимый фильм');
         inputFavorite.checked = false;
     }
-    movieDB.movies.push(inputFilm.value);
-
-    writeListOfFilms();
+    movieDB.movies.forEach((item, i) => {
+        listOfFilms.innerHTML += `
+            <li class="promo__interactive-item">${i+1}. ${item = (item.length < 21) ? item : item.slice(0, 21) + '...'}
+                <div class="delete"></div>
+            </li>`;
+    });
+    inputFilm.value = '';
+    const delItem = document.querySelectorAll('.delete');
+    delItem.forEach((item, i) => {
+        item.addEventListener('click', (e) => {
+            item.parentElement.remove();
+            movieDB.movies.splice((i), 1);
+        });
+    });
 }
