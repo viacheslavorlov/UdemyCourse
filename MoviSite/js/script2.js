@@ -34,6 +34,7 @@ const form = document.querySelector('.add');
 const inputFilm = document.querySelector('.adding__input');
 const button = document.querySelector('button');
 const inputFavorite = document.querySelector('input[type="checkbox"]');
+const delItems = document.querySelectorAll('.delete');
 
 
 // убрать рекламу (скрыть)
@@ -58,43 +59,40 @@ backgroundPromo.style.backgroundImage = `url("./img/bg.jpg")`;
 // movieDB.movies.sort();
 // listOfFilms.forEach((item, index) => item.textContent = `${index + 1}. ${movieDB.movies[index]} `);
 
-//? метод Петреченко (сложнее)
-listOfFilms.innerHTML = '';
-movieDB.movies.sort();
-movieDB.movies.forEach((item, i) => {
-    listOfFilms.innerHTML += `
+//* Заполнить список фильмов
+const writeListOfFilms = () => {
+    listOfFilms.innerHTML = '';
+    movieDB.movies.sort();
+    movieDB.movies.forEach((item, i) => {
+        listOfFilms.innerHTML += `
         <li class="promo__interactive-item">${i+1}. ${item = (item.length < 21) ? item : item.slice(0, 21) + '...'}
             <div class="delete"></div>
         </li>`;
-    const delItem = document.querySelectorAll('.delete');
-    delItem.forEach(item => {
+    });
+    delItem();
+};
+
+const delItem = () => {
+    delItems.forEach((item, i) => {
         item.addEventListener('click', () => {
             item.parentElement.remove();
+            movieDB.movies.splice(i, 1);
         });
     });
-});
+};
+
+writeListOfFilms();
 
 button.addEventListener('click', addListItem);
 
 function addListItem(e) {
     e.preventDefault();
-    listOfFilms.innerHTML = '';
-    movieDB.movies.push(inputFilm.value);
-    movieDB.movies.sort();
+
     if (inputFavorite.checked) {
         console.log('Добавляем любимый фильм');
+        inputFavorite.checked = false;
     }
-    movieDB.movies.forEach((item, i) => {
-        listOfFilms.innerHTML += `
-            <li class="promo__interactive-item">${i+1}. ${item = (item.length < 21) ? item : item.slice(0, 21) + '...'}
-                <div class="delete"></div>
-            </li>`;
-    });
-    inputFilm.value = '';
-    const delItem = document.querySelectorAll('.delete');
-    delItem.forEach(item => {
-        item.addEventListener('click', (e) => {
-            item.remove();
-        });
-    });
+    movieDB.movies.push(inputFilm.value);
+
+    writeListOfFilms();
 }
