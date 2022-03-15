@@ -1,3 +1,4 @@
+'use strict';
 /* Задания на урок:
 
 1) Реализовать функционал, что после заполнения формы и нажатия кнопки "Подтвердить" - 
@@ -15,7 +16,10 @@ P.S. Здесь есть несколько вариантов решения з
 
 5) Фильмы должны быть отсортированы по алфавиту */
 
-'use strict';
+// document.addEventListener('DOMContentLoaded', () => {
+
+// });
+
 //переменные:
 const movieDB = {
     movies: [
@@ -30,28 +34,33 @@ const adv = document.querySelectorAll('.promo__adv img');
 const genre = document.querySelector('.promo__genre');
 const backgroundPromo = document.querySelector('.promo__bg');
 const listOfFilms = document.querySelector('.promo__interactive-list');
-const form = document.querySelector('.add');
+const form = document.querySelector('form.add');
 const inputFilm = document.querySelector('.adding__input');
 const button = document.querySelector('button');
 const inputFavorite = document.querySelector('input[type="checkbox"]');
 
 
-// убрать рекламу (скрыть)
-// document.querySelector('.promo__adv').style.display = 'none';
-// убрать рекламу (удалить, только рекламные блоки)
-function removeItem(nodeList) {
-    nodeList.forEach(item => item.remove());
-}
-removeItem(adv);
 
-// Изменить жанр фильма, поменять "комедия" на "драма"
 
-genre.textContent = 'ДРАМА';
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
 
-//Изменить задний фон постера с фильмом на изображение "bg.jpg".Оно лежит в папке img.
-//Реализовать только при помощи JS
-backgroundPromo.style.backgroundImage = `url("./img/bg.jpg")`;
+    const newFilm = inputFilm.value;
+    let favorite = inputFavorite.checked;
+    if (favorite) {
+        console.log('Добавляем любимый фильм');
+        favorite = false;
+    }
 
+    if (newFilm) {
+        movieDB.movies.push(newFilm);
+        arrSort(movieDB.movies);
+        createMovieList(movieDB.movies, listOfFilms);
+        e.target.reset();
+    }
+});
+
+//* Заполнить список фильмов
 // Список фильмов на странице сформировать на основании данных из этого JS файла.
 // Отсортировать их по алфавиту
 // добавить нумерацию фильмов
@@ -60,45 +69,46 @@ const arrSort = (arr) => {
     arr.sort();
 };
 
-const delItem = () => {
-    document.querySelectorAll('.delete').forEach((item, i)=> {
-        item.addEventListener('click', (e) => {
-            item.parentElement.remove();
-            movieDB.movies.splice((i), 1);
+
+function createMovieList(films, parent) {
+    parent.innerHTML = '';
+    arrSort(movieDB.movies);
+    films.forEach((item, i) => {
+        parent.innerHTML += `
+        <li class="promo__interactive-item">
+            ${i+1}. ${item = (item.length < 21) ? item : item.slice(0, 21) + '...'}
+            <div class="delete"></div>
+        </li>`;
+    });
+
+    document.querySelectorAll('.delete').forEach((btn, i) => {
+        btn.addEventListener('click', () => {
+            btn.parentElement.remove();
+            movieDB.movies.splice(i, 1);
+            createMovieList(films, parent);
         });
     });
-    
-};
-
-
-//? метод Петреченко (сложнее)
-const refreshListOfFilms = () => {
-    listOfFilms.innerHTML = '';
-    arrSort(movieDB.movies);
-    movieDB.movies.forEach((item, i) => {
-        listOfFilms.innerHTML += `
-            <li class="promo__interactive-item">${i+1}. ${item = (item.length < 21) ? item : item.slice(0, 21) + '...'}
-                <div class="delete"></div>
-            </li>`;
-        delItem();
-    });
-};
-
-refreshListOfFilms();
-
-function addListItem(e) {
-    e.preventDefault();
-    movieDB.movies.push(inputFilm.value);
-    arrSort(movieDB.movies);
-    if (inputFavorite.checked) {
-        console.log('Добавляем любимый фильм');
-        inputFavorite.checked = false;
-    }
-   refreshListOfFilms();
-    inputFilm.value = ''; //очищаем строчку ввода фильма
-    //    функция для удаления из списка и из базы данных
-
-    delItem();
 }
 
-button.addEventListener('click', addListItem);
+createMovieList(movieDB.movies, listOfFilms);
+
+// убрать рекламу (скрыть)
+// document.querySelector('.promo__adv').style.display = 'none';
+// убрать рекламу (удалить, только рекламные блоки)
+
+const deletAddv = (arr) => {
+    arr.forEach(item => item.remove());
+};
+
+deletAddv(adv);
+
+
+// Изменить жанр фильма, поменять "комедия" на "драма"
+//Изменить задний фон постера с фильмом на изображение "bg.jpg".Оно лежит в папке img.
+//Реализовать только при помощи JS
+const makeChanges = () => {
+    genre.textContent = 'ДРАМА';
+    backgroundPromo.style.backgroundImage = `url("./img/bg.jpg")`;
+};
+makeChanges();
+
