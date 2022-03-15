@@ -39,8 +39,10 @@ const inputFavorite = document.querySelector('input[type="checkbox"]');
 // убрать рекламу (скрыть)
 // document.querySelector('.promo__adv').style.display = 'none';
 // убрать рекламу (удалить, только рекламные блоки)
-
-adv.forEach(item => item.remove());
+function removeItem(nodeList) {
+    nodeList.forEach(item => item.remove());
+}
+removeItem(adv);
 
 // Изменить жанр фильма, поменять "комедия" на "драма"
 
@@ -53,49 +55,50 @@ backgroundPromo.style.backgroundImage = `url("./img/bg.jpg")`;
 // Список фильмов на странице сформировать на основании данных из этого JS файла.
 // Отсортировать их по алфавиту
 // добавить нумерацию фильмов
-// * мой рабочий метод)
-// const listOfFilms = document.querySelectorAll('.promo__interactive-item');
-// movieDB.movies.sort();
-// listOfFilms.forEach((item, index) => item.textContent = `${index + 1}. ${movieDB.movies[index]} `);
 
-//? метод Петреченко (сложнее)
-listOfFilms.innerHTML = '';
-movieDB.movies.sort();
-movieDB.movies.forEach((item, i) => {
-    listOfFilms.innerHTML += `
-        <li class="promo__interactive-item">${i+1}. ${item = (item.length < 21) ? item : item.slice(0, 21) + '...'}
-            <div class="delete"></div>
-        </li>`;
-    const delItem = document.querySelectorAll('.delete');
-    delItem.forEach(item => {
-        item.addEventListener('click', () => {
-            item.parentElement.remove();
-        });
-    });
-});
+const arrSort = (arr) => {
+    arr.sort();
+};
 
-button.addEventListener('click', addListItem);
-
-function addListItem(e) {
-    e.preventDefault();
-    listOfFilms.innerHTML = '';
-    movieDB.movies.push(inputFilm.value);
-    movieDB.movies.sort();
-    if (inputFavorite.checked) {
-        console.log('Добавляем любимый фильм');
-    }
-    movieDB.movies.forEach((item, i) => {
-        listOfFilms.innerHTML += `
-            <li class="promo__interactive-item">${i+1}. ${item = (item.length < 21) ? item : item.slice(0, 21) + '...'}
-                <div class="delete"></div>
-            </li>`;
-    });
-    inputFilm.value = '';
-    const delItem = document.querySelectorAll('.delete');
-    delItem.forEach((item, i) => {
+const delItem = () => {
+    document.querySelectorAll('.delete').forEach((item, i)=> {
         item.addEventListener('click', (e) => {
             item.parentElement.remove();
             movieDB.movies.splice((i), 1);
         });
     });
+    
+};
+
+
+//? метод Петреченко (сложнее)
+const refreshListOfFilms = () => {
+    listOfFilms.innerHTML = '';
+    arrSort(movieDB.movies);
+    movieDB.movies.forEach((item, i) => {
+        listOfFilms.innerHTML += `
+            <li class="promo__interactive-item">${i+1}. ${item = (item.length < 21) ? item : item.slice(0, 21) + '...'}
+                <div class="delete"></div>
+            </li>`;
+        delItem();
+    });
+};
+
+refreshListOfFilms();
+
+function addListItem(e) {
+    e.preventDefault();
+    movieDB.movies.push(inputFilm.value);
+    arrSort(movieDB.movies);
+    if (inputFavorite.checked) {
+        console.log('Добавляем любимый фильм');
+        inputFavorite.checked = false;
+    }
+   refreshListOfFilms();
+    inputFilm.value = ''; //очищаем строчку ввода фильма
+    //    функция для удаления из списка и из базы данных
+
+    delItem();
 }
+
+button.addEventListener('click', addListItem);
