@@ -165,12 +165,15 @@ function openModal() {
     modal.classList.add('show');
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+    clearInterval(modalTimerId);
+    
 }
 
 function closeModal() {
     modal.classList.add('hidden');
     modal.classList.remove('show');
     document.body.style.overflow = '';
+    
 }
 
 modalCloseBtn.addEventListener('click', closeModal);
@@ -190,3 +193,14 @@ document.addEventListener('keydown', (e) => {
         closeModal();
     }
 });
+
+const modalTimerId = setTimeout(openModal, 8000);
+
+function showModalByScroll() {
+    if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 1) {
+        openModal();
+        window.removeEventListener('scroll', showModalByScroll);
+    }
+}
+
+window.addEventListener('scroll', showModalByScroll);
