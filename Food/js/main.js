@@ -207,26 +207,38 @@ window.addEventListener('scroll', showModalByScroll);
 
 
 //? карточки с меню (Классы)
-const cartHolders = document.querySelectorAll('.menu__item');
-const names = ['"Фитнес"', '"Премиум"', '"Постное"'];
+// const cartHolders = document.querySelectorAll('.menu__item');
+const names = ['Фитнес', 'Премиум', 'Не очень Постное'];
 const images = ['img/tabs/vegy.jpg', 'img/tabs/elite.jpg', 'img/tabs/post.jpg'];
-const alts = ['Фитнес', 'Премиум', 'Постное'];
+const alts = ['Фитнес', 'Ghtvbev', 'Не очень Постное'];
 const infos = [`Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!`,
                'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
                'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.'];
-const prices = [229, 550, 300];
+const prices = [200, 500, 300];
 class FoodCart {
-    constructor(name, img, alt, info, price, place) {
+    constructor(name, img, alt, info, price, element, parentSelector, ...classes) {
         this.name = name;
         this.img = img;
         this.alt = alt;
         this.info = info;
         this.price = price;
-        this.place = place;
+        this.classes = classes;
+        this.element = element;
+        this.parent = document.querySelector(parentSelector);
+        this.transfer = 0.7;
+        this.changeToUAH();
     }
     madeCart() {
-        this.place.innerHTML = `
-            <img src="${this.img}" alt="${this.alt}">
+        const divElement = document.createElement(this.element);
+        //? если классы не указаны (...rest в аргументах функции пустой!)
+        if (this.classes.length === 0) {
+            this.classes.push('menu__item');
+        } 
+
+        this.classes.forEach(classItem => divElement.classList.add(classItem));
+        
+        divElement.innerHTML = `
+            <img src=${this.img} alt=${this.alt}>
             <h3 class="menu__item-subtitle">Меню ${this.name}</h3>
             <div class="menu__item-descr">${this.info}</div>
             <div class="menu__item-divider"></div>
@@ -235,10 +247,28 @@ class FoodCart {
                 <div class="menu__item-total"><span>${this.price}</span> грн/день </div>
             </div>
         `;
+        this.parent.append(divElement);
+    }
+    changeToUAH() {
+        this.price = this.price * this.transfer;
     }
 }
 
-const newCart = new FoodCart(names[1], images[1], alts[1], infos[1], prices[1], cartHolders[0]);
-newCart.madeCart();
-const secondCart = new FoodCart(names[0], images[0], alts[0], infos[0], prices[0], cartHolders[1]);
+const newCart = new FoodCart(
+    names[1], images[1], alts[1],
+    infos[1], prices[1], 'div',
+    '.menu__field .container',
+    'menu__item', 'big');
+newCart.madeCart(); //! стандартный метод создания 
+const secondCart = new FoodCart(
+    names[0], images[0], alts[0],
+    infos[0], prices[0], 'div',
+    '.menu__field .container',
+    );
 secondCart.madeCart();
+
+new FoodCart(
+    names[2], images[2], alts[2],
+    infos[2], prices[2], 'div',
+    '.menu__field .container',
+).madeCart();
