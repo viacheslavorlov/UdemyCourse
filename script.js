@@ -21,3 +21,4 @@ function compareNumbers(a, b) {
     return b - a;
 }
 compareNumbers();
+
