@@ -166,14 +166,14 @@ function openModal() {
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
     clearInterval(modalTimerId);
-    
+
 }
 
 function closeModal() {
     modal.classList.add('hidden');
     modal.classList.remove('show');
     document.body.style.overflow = '';
-    
+
 }
 
 modalCloseBtn.addEventListener('click', closeModal);
@@ -212,8 +212,9 @@ const names = ['Фитнес', 'Премиум', 'Не очень Постное
 const images = ['img/tabs/vegy.jpg', 'img/tabs/elite.jpg', 'img/tabs/post.jpg'];
 const alts = ['Фитнес', 'Ghtvbev', 'Не очень Постное'];
 const infos = [`Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!`,
-               'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
-               'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.'];
+    'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
+    'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.'
+];
 const prices = [200, 500, 300];
 class FoodCart {
     constructor(name, img, alt, info, price, element, parentSelector, ...classes) {
@@ -233,10 +234,10 @@ class FoodCart {
         //? если классы не указаны (...rest в аргументах функции пустой!)
         if (this.classes.length === 0) {
             this.classes.push('menu__item');
-        } 
+        }
 
         this.classes.forEach(classItem => divElement.classList.add(classItem));
-        
+
         divElement.innerHTML = `
             <img src=${this.img} alt=${this.alt}>
             <h3 class="menu__item-subtitle">Меню ${this.name}</h3>
@@ -264,7 +265,7 @@ const secondCart = new FoodCart(
     names[0], images[0], alts[0],
     infos[0], prices[0], 'div',
     '.menu__field .container',
-    );
+);
 secondCart.madeCart();
 
 new FoodCart(
@@ -272,3 +273,57 @@ new FoodCart(
     infos[2], prices[2], 'div',
     '.menu__field .container',
 ).madeCart();
+
+// ? Forms
+
+const message = {
+    loading: 'Загрузка',
+    success: 'Спасибо! Мы с вами свяжемся!',
+    failure: 'Что-то пошло не так...'
+};
+
+const forms = document.querySelectorAll('form');
+function postData(form) {
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const statusMessage = document.createElement('div');
+        statusMessage.classList.add('status');
+        statusMessage.textContent = message.loading;
+        form.append(statusMessage);
+
+        const request = new XMLHttpRequest();
+        request.open('POST', 'server.php');
+        request.setRequestHeader('Content-type', 'application/json'); //? Если JSON
+        // request.setRequestHeader('Content-type', 'multipart/form-data');//! Если если передаётся форма, 
+                                                                           //! то Content-type устанавливается
+                                                                           //! автоматически;
+        const formData = new FormData(form);
+
+        const object = {};
+        formData.forEach(function(value, key) {
+            object[key] = value;
+        });
+
+        const json = JSON.stringify(object);
+
+        request.send(json);
+        request.addEventListener('load', () => {
+            if (request.status === 200) {
+                console.log(request.response);
+                statusMessage.textContent = message.success;
+                form.reset();
+                setTimeout(() => {
+                    statusMessage.remove();
+                }, 2000);
+            } else {
+                statusMessage.textContent = message.failure;
+            }
+        });
+
+    });
+}
+forms.forEach(item => {
+    postData(item);
+});
+
