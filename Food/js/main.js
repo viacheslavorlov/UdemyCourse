@@ -158,8 +158,7 @@ setTimer(deadline);
 // модальное окно
 
 const modalTrigger = document.querySelectorAll('[data-modal]'),
-    modal = document.querySelector('.modal'),
-    modalCloseBtn = document.querySelector('[data-close]');
+    modal = document.querySelector('.modal');
 
 function openModal() {
     modal.classList.add('show');
@@ -176,14 +175,12 @@ function closeModal() {
 
 }
 
-modalCloseBtn.addEventListener('click', closeModal);
-
 modalTrigger.forEach(btn => {
     btn.addEventListener('click', openModal);
 });
 
 modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
+    if (e.target === modal || e.target.getAttribute('data-close') == '') {
         closeModal();
     }
 });
@@ -211,9 +208,16 @@ window.addEventListener('scroll', showModalByScroll);
 const names = ['Фитнес', 'Премиум', 'Не очень Постное'];
 const images = ['img/tabs/vegy.jpg', 'img/tabs/elite.jpg', 'img/tabs/post.jpg'];
 const alts = ['Фитнес', 'Ghtvbev', 'Не очень Постное'];
-const infos = [`Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!`,
-    'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
-    'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.'
+const infos = [`Меню "Фитнес" - это новый подход к приготовлению блюд:
+                больше свежих овощей и фруктов. Продукт активных и здоровых людей.
+                Это абсолютно новый продукт с оптимальной ценой и высоким качеством!`,
+    `В меню “Премиум” мы используем не только красивый дизайн упаковки,
+                но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты -
+                ресторанное меню без похода в ресторан!`,
+    `Меню “Постное” - это тщательный подбор ингредиентов:
+                полное отсутствие продуктов животного происхождения, молоко из миндаля,
+                овса, кокоса или гречки, правильное количество белков за счет тофу
+                и импортных вегетарианских стейков.`
 ];
 const prices = [200, 500, 300];
 class FoodCart {
@@ -294,20 +298,20 @@ new FoodCart(
 
 //         const request = new XMLHttpRequest();
 //         request.open('POST', 'server.php');
-//         request.setRequestHeader('Content-type', 'application/json'); //? Если JSON
-//?        //request.setRequestHeader('Content-type', 'multipart/form-data');//! Если передаётся форма, 
+//     //? request.setRequestHeader('Content-type', 'application/json');  Если JSON
+//     //! request.setRequestHeader('Content-type', 'multipart/form-data'); Если передаётся форма, 
 //                                                                           //! то Content-type устанавливается
 //                                                                           //! автоматически;
 //         const formData = new FormData(form);
 
-//         const object = {};
-//         formData.forEach(function(value, key) {
-//             object[key] = value;
-//         });
+// const object = {};
+// formData.forEach(function(value, key) {
+//     object[key] = value;
+// });
 
-//         const json = JSON.stringify(object);
+// const json = JSON.stringify(object);
 
-//         request.send(json); //или form
+//         request.send(formData); //или form
 //         request.addEventListener('load', () => {
 //             if (request.status === 200) {
 //                 console.log(request.response);
@@ -342,23 +346,67 @@ function postData(form) {
 
         const formData = new FormData(form);
 
+        const object = {};
+        formData.forEach((key, value) => {
+            object[key] = value;
+        });
+
+        const json = JSON.stringify(object);
+
         const request = new XMLHttpRequest();
         request.open('POST', 'server.php', true);
-        request.send(formData);
+        request.setRequestHeader('Content-type', 'application/json');
+        request.send(json);
 
-        const messageDiv = document.createElement('div');
+        const messageDiv = document.createElement('img');
+        messageDiv.src = 'img/spinner.svg';
+        messageDiv.style.cssText = `
+            display: block;
+            margin: 0 auto;
+        `;
+        form.insertAdjacentElement('afterend',messageDiv);
 
         request.addEventListener('load', () => {
             if (request.status === 200) {
-                messageDiv.innerText = responseMessages.success;
-                form.append(messageDiv);
+                console.log(request.readyState, request.response);
+                showTanksModal(responseMessages.success);
+                form.reset();
+                setTimeout(() => {
+                    messageDiv.remove(messageDiv);
+                }, 3000);
             } else {
-                messageDiv.textContent = responseMessages.failure;
-                form.append(messageDiv);
+                showTanksModal(responseMessages.error);
+                console.log(request.readyState, request.response);
             }
         });
     });
 }
+
+function showTanksModal(message) {
+    const prevModalDialog = document.querySelector('.modal__dialog');
+
+    prevModalDialog.classList.add('hide');
+    openModal();
+
+    const tanksModal = document.createElement('div');
+    tanksModal.classList.add('modal__dialog');
+    tanksModal.innerHTML = `
+        <div class="modal__content">
+            <div class="modal__close" data-close>×</div>
+            <div class="modal__title">${message}</div>
+        </div>
+    `;
+
+    document.querySelector('.modal').append(tanksModal);
+
+    setTimeout(() => {
+        tanksModal.remove();
+        prevModalDialog.classList.add('show');
+        prevModalDialog.classList.remove('hide');
+        closeModal();
+    }, 4000);
+}
+
 forms.forEach(item => {
     postData(item);
 });

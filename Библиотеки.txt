@@ -1,0 +1,11 @@
+Ссылки:
+Leaflet.js - https://leafletjs.com/
+D3.js - https://d3js.org/
+Three.js - https://threejs.org/
+Портфолио с машинкой - https://bruno-simon.com/
+Immutable.js - https://immutable-js.github.io/immuta...
+Про иммутабельность - https://habr.com/ru/company/devexpres...
+Hammer.js - https://hammerjs.github.io/
+Moment.js - https://momentjs.com/
+Highlight.js - https://highlightjs.org/
+Voca.js - https://vocajs.com/
