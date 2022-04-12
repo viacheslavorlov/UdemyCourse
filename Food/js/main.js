@@ -343,6 +343,13 @@ const responseMessages = {
 function postData(form) {
     form.addEventListener('submit', (e) => {
         e.preventDefault();
+        const messageDiv = document.createElement('img');
+        messageDiv.src = 'img/spinner.svg';
+        messageDiv.style.cssText = `
+            display: block;
+            margin: 0 auto;
+        `;
+        form.insertAdjacentElement('afterend', messageDiv);
 
         const formData = new FormData(form);
 
@@ -350,35 +357,48 @@ function postData(form) {
         formData.forEach((key, value) => {
             object[key] = value;
         });
-
-        const json = JSON.stringify(object);
-
-        const request = new XMLHttpRequest();
-        request.open('POST', 'server.php', true);
-        request.setRequestHeader('Content-type', 'application/json');
-        request.send(json);
-
-        const messageDiv = document.createElement('img');
-        messageDiv.src = 'img/spinner.svg';
-        messageDiv.style.cssText = `
-            display: block;
-            margin: 0 auto;
-        `;
-        form.insertAdjacentElement('afterend',messageDiv);
-
-        request.addEventListener('load', () => {
-            if (request.status === 200) {
-                console.log(request.readyState, request.response);
+        
+        fetch('server.php', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json' //для JSON
+            },
+            body: JSON.stringify(object)
+            })
+            .then(data => data.text()) //перевести ответ в формат данных 'text'
+            .then(data => {
+                console.log(data);
                 showTanksModal(responseMessages.success);
-                form.reset();
                 setTimeout(() => {
-                    messageDiv.remove(messageDiv);
+                    messageDiv.remove();
                 }, 3000);
-            } else {
-                showTanksModal(responseMessages.error);
-                console.log(request.readyState, request.response);
-            }
-        });
+            }).catch(() => {
+                showTanksModal(responseMessages.error); //не появится в этой конструкции
+            }).finally(() => {
+                form.reset();
+            });
+
+
+
+        // ! устаревший способ передачи данных
+        // const request = new XMLHttpRequest();
+        // request.open('POST', 'server.php', true);
+        // request.setRequestHeader('Content-type', 'application/json');
+        // request.send(json);
+
+        // request.addEventListener('load', () => {
+        //     if (request.status === 200) {
+        //         console.log(request.readyState, request.response);
+        //         showTanksModal(responseMessages.success);
+        //         form.reset();
+        //         setTimeout(() => {
+        //             messageDiv.remove(messageDiv);
+        //         }, 3000);
+        //     } else {
+        //         showTanksModal(responseMessages.error);
+        //         console.log(request.readyState, request.response);
+        //     }
+        // });
     });
 }
 
@@ -410,3 +430,5 @@ function showTanksModal(message) {
 forms.forEach(item => {
     postData(item);
 });
+
+// Fetch API
