@@ -51,23 +51,89 @@
 //цикл в цикле
 
 //! // // // // // // // // /
-const lines = 5;
-let result = '';
+// const lines = 5;
+// let result = '';
 // Проверяется именно переменная result, формируйте строку в ней
 // console.log('  1  \n 111 \n11111');
-function createTree(numberOfLines) {
-    let stringLengh = numberOfLines * 2 + 1;
-    for (let i = 0; i <= numberOfLines; i++) {
-        for (let j = 0; j <= stringLengh; j++) {
-            if (j >= (stringLengh / 2) - i && j <= (stringLengh / 2) + i) {
-                result += '*';
+// function createTree(numberOfLines) {
+//     let stringLengh = numberOfLines * 2 + 1;
+//     for (let i = 0; i <= numberOfLines; i++) {
+//         for (let j = 0; j <= stringLengh; j++) {
+//             if (j >= (stringLengh / 2) - i && j <= (stringLengh / 2) + i) {
+//                 result += '*';
+//             } else {
+//                 result += ' ';
+//             }
+//         }
+//         result +='\n';
+//     }
+//     return result;
+// }
+
+// console.log(createTree(lines));
+
+// function getTimeFromMinutes(minutes) {
+//     if (Number.isInteger(minutes) && minutes >= 0) {
+//         const hours = Math.floor(minutes / 60);
+//         let hoursName;
+//         switch (hours) {
+//             case 1:
+//                 hoursName = 'час';
+//                 break;
+//             case 2:
+//                 hoursName = 'часа';
+//                 break;
+//             case 3:
+//                 hoursName = 'часа';
+//                 break;
+//             case 4:
+//                 hoursName = 'часа';
+//                 break;
+//             default:
+//                 hoursName = 'часов';
+//                 break;
+//         }
+
+//         let minut = minutes % 60;
+
+//         return `Это ${hours} ${hoursName} и ${minut} минут`;
+//     } else {
+//         return 'Ошибка, проверьте данные';
+//     }
+// }
+
+// console.log(getTimeFromMinutes(0));
+
+// function findMaxNumber(num1, num2, num3, num4) {
+//     if (typeof (num1) === 'number' && typeof (num2) === 'number'&&
+//     typeof (num3) === 'number' && typeof (num4) === 'number') {
+//         return Math.max(num1, num2, num3, num4);
+//     } else {
+//         return 0;
+//     }
+// }
+
+function fib(num) {
+    let result = '';
+    let first = 0;
+    let second = 1;
+
+    if (Number.isInteger(num) && num > 0) {
+        for (let i = 0; i < num; i++) {
+            if (i + 1 === num) {
+                result += `${first}`;
             } else {
-                result += ' ';
+                result += `${first} `;
             }
+            let tird = first + second;
+            first = second;
+            second = tird;
         }
-        result +='\n';
+        
+        return result;
+    } else {
+        return '';
     }
-    return result;
 }
 
-console.log(createTree(lines));
+console.log(fib(3));
