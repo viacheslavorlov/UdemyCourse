@@ -1,11 +1,32 @@
 'use strict';
+//
+// const box = document.querySelector('.box');
+//
+// let observer = new MutationObserver(mutationRecords => {
+//    console.log(mutationRecords); //создание наблюдателя
+// });
+//
+// observer.observe(box,/*за каким элементом наблюдать*/ {
+//     childList: true //за чем конкретно наблюдать (для полного списка смотреть документацию)
+// });
+//
+// observer.disconnect()
+const urlObj = {
+    protocol: 'https',
+    domain: 'mysite.com'
+}
 
-const box = document.querySelector('.box');
+function showCurrentURL() {
+    const extractCurrDomain = () => {
+        return this.domain;
+    }
+    const extractCurrProtocol = () => {
+        return this.protocol;
+    }
 
-let observer = new MutationObserver(mutationRecords => {
-   console.log(mutationRecords);
-});
+    console.log(`${extractCurrProtocol()}://${extractCurrDomain()}`)
+}
 
-observer.observe(box, {
-    childList: true
-})
+const url = showCurrentURL.bind(urlObj);
+
+console.log(url);
