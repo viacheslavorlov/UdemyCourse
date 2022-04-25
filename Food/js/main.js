@@ -435,8 +435,14 @@ function showTanksModal(message) {
     }, 4000);
 }
 
-forms.forEach(item => {
-    postData(item);
-});
+// forms.forEach(item => {
+//     postData(item);
+// });
+
+
 
 // Fetch API
+
+fetch('http://localhost:3000/menu')
+    .then(data => data.json())
+    .then(res => console.log(res));
