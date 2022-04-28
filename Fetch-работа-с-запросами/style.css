@@ -1,0 +1,24 @@
+#box-form {
+    height: auto;
+    width: 400px;
+    margin: 0 auto;
+    background-color: #898689;
+}
+
+.box {
+    height: 70px;
+    width: 350px;
+    font-size: 2em;
+    margin: 0 auto;
+    background-color: #898689;
+    border: solid 2px deepskyblue;
+}
+
+button {
+    height: 50px;
+    width: 300px;
+    font-size: 1.5em;
+    margin: 0 auto;
+    background-color: #898689;
+    border: solid 2px black;
+}

@@ -262,25 +262,33 @@ class FoodCart {
     }
 
     changeToUAH() {
-        this.price = this.price * this.transfer;
+        this.price = (this.price * this.transfer).toFixed(2);
     }
 }
 
 // функция для создания карточек с товаром из db.json
-const getResource = async (url) => {
-    const res = await fetch(url);
-    if (!res.ok) {
-        throw new Error(`Could not fetch ${url}, status: ${res.status}`);
-    }
-    return await res.json();
-};
-// вызов функции для создаия карточек из базы данны (db.json) "best practice?"
-getResource('http://localhost:3000/menu')
+// const getResource = async (url) => {
+//     const res = await fetch(url);
+//     if (!res.ok) {
+//         throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+//     }
+//     return await res.json();
+// };
+
+//? вызов функции для создания карточек с использованием библиотеки 
+//? axios
+axios.get('http://localhost:3000/menu')
     .then(data => {
-        data.forEach(({name, img, alt, info, price}) => {
+        data.data.forEach(({name, img, alt, info, price
+        }) => {
             new FoodCart(name, img, alt, info, price, 'div', '.menu .container').madeCart();
         });
     });
+
+
+
+// вызов функции для создаия карточек из базы данны (db.json) "best practice?"
+// getRes 
 
 
 //---------------------------------------------------------------
@@ -486,11 +494,67 @@ forms.forEach(item => {
 
 
 
-//post Data
+
+//? Слайдер 
+
+//переменные
+const images = document.querySelectorAll('.offer__slide'),
+      sliderCounter = document.querySelector('.offer__slider-counter'),
+      totalImg = document.querySelector('#total'),
+      currentImageNumber = document.querySelector('#current'),
+      prevArrow = document.querySelector('.offer__slider-prev'),
+      nextArrow = document.querySelector('.offer__slider-next'),
+      slideWrapper = document.querySelector('.offer__slider-wrapper'),
+      sliderField = document.querySelector('.offer__slider-inner'),
+      width = window.getComputedStyle(slideWrapper).width;
+
+// let currentImg = 1;
+let ofset = 0;
 
 
-// Fetch API
+// todo Мой вариант
+// оставить первую картинку
+images.forEach(img => {
+    img.style.display = 'none';
+    img.classList.add('fade');
+});
+images[0].style.display = 'block';
 
-// fetch('http://localhost:3000/menu')
-//     .then(data => data.json())
-//     .then(res => console.log(res));
+let currentImg = 0;
+currentImageNumber.textContent = `0${currentImg + 1}`;
+
+// функция в прослушивателе событий простой вариант через display или классы
+sliderCounter.addEventListener('click', (e) => {
+    if (e.target === prevArrow || e.target === prevArrow.querySelector('img')) {
+        images.forEach(item => {
+            item.style.display = 'none';
+        });
+        if (currentImg - 1 < 0) {
+            currentImg = images.length - 1;
+            images[currentImg].style.display = 'block';
+            currentImageNumber.textContent = (images.length < 10) ?
+                `0${currentImg + 1}` : `${currentImg + 1}`;
+        } else if ((currentImg - 1) >= 0 && (currentImg - 1) < images.length - 1) {
+            currentImg -= 1;
+            images[currentImg].style.display = 'block';
+            currentImageNumber.textContent = (images.length < 10) ?
+                `0${currentImg + 1}` : `${currentImg + 1}`;
+        }    
+    } else if (e.target === nextArrow || e.target === nextArrow.querySelector('img')) {
+        images.forEach(item => {
+            item.style.display = 'none';
+        });
+        if (currentImg + 1 > images.length - 1) {
+            currentImg = 0;
+            images[currentImg].style.display = 'block';
+            currentImageNumber.textContent = (images.length < 10) ?
+                `0${currentImg + 1}` : `${currentImg + 1}`;
+        } else if ((currentImg + 1) >= 0 && (currentImg - 1) < images.length - 1) {
+            currentImg += 1;
+            images[currentImg].style.display = 'block';
+            currentImageNumber.textContent = (images.length < 10) ?
+                `0${currentImg + 1}` : `${currentImg + 1}`;
+
+        }
+    }
+});

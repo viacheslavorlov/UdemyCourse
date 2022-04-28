@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Fetch API</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<form id="box-form">
+    <label for="name">Фио: </label>
+    <input type="text" id="input-fio">
+    <input type="file" accept=".json" id="db">
+    <label for="Дата">Дата: </label>
+    <div id="Дата" class="box"></div><br>
+    <label for="name">Фио: </label>
+    <div id="name" class="box" ></div><br>
+    <label for="diagnosis">Диагноз: </label>
+    <div id="diagnosis" class="box" ></div><br>
+    <label for="recomendation">Рекомендации:</label>
+    <div id="recomendation" class="box"></div><br>
+    <button id="get-data">Получить данные из БД</button>
+    <button id="send-data">Записать данные в БД</button>
+</form>
+
+<script src="./fetch2.js"></script>
+</body>
+</html>
