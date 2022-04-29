@@ -507,54 +507,99 @@ const images = document.querySelectorAll('.offer__slide'),
       slideWrapper = document.querySelector('.offer__slider-wrapper'),
       sliderField = document.querySelector('.offer__slider-inner'),
       width = window.getComputedStyle(slideWrapper).width;
+//! создать самостоятельно слайдер через офсет
+let currentImg = 1;
+let offset = 0;
+sliderField.style.width = 100 * images.length + '%';
+sliderField.style.display = 'flex';
+sliderField.style.transition = '.45s all';
+slideWrapper.style.overflow = 'hidden';
+images.forEach(img => {
+    img.style.width = width;
+});
+function getRightNum(field, num) {
+    if (num < 10) {
+        field.textContent = `0${num}`
+    } else {
+        field.textContent = `${num}`
+    }
+}
 
-// let currentImg = 1;
-let ofset = 0;
+getRightNum(currentImageNumber, currentImg);
+getRightNum(totalImg, images.length);
+
+nextArrow.addEventListener('click', () => {
+    if (offset === parseInt(width) * (images.length - 1)) {
+        offset = 0;
+    } else {
+        offset += parseInt(width);
+    }
+    sliderField.style.transform = `translateX(-${offset}px`;
+    currentImg = (offset / parseInt(width)) + 1;
+
+    getRightNum(currentImageNumber, currentImg);
+});
+prevArrow.addEventListener('click', () => {
+    if (offset === 0) {
+        offset = parseInt(width) * (images.length - 1);
+    } else {
+        offset -= parseInt(width);
+    }
+    sliderField.style.transform = `translateX(-${offset}px`;
+    currentImg = (offset / parseInt(width)) + 1;
+
+    getRightNum(currentImageNumber, currentImg);
+});
 
 
+
+
+//-----------------------------------
 // todo Мой вариант
 // оставить первую картинку
-images.forEach(img => {
-    img.style.display = 'none';
-    img.classList.add('fade');
-});
-images[0].style.display = 'block';
+// images.forEach(img => {
+//     img.style.display = 'none';
+//     img.classList.add('fade');
+// });
+// images[0].style.display = 'block';
 
-let currentImg = 0;
-currentImageNumber.textContent = `0${currentImg + 1}`;
+// let currentImg = 0;
+// currentImageNumber.textContent = `0${currentImg + 1}`;
 
 // функция в прослушивателе событий простой вариант через display или классы
-sliderCounter.addEventListener('click', (e) => {
-    if (e.target === prevArrow || e.target === prevArrow.querySelector('img')) {
-        images.forEach(item => {
-            item.style.display = 'none';
-        });
-        if (currentImg - 1 < 0) {
-            currentImg = images.length - 1;
-            images[currentImg].style.display = 'block';
-            currentImageNumber.textContent = (images.length < 10) ?
-                `0${currentImg + 1}` : `${currentImg + 1}`;
-        } else if ((currentImg - 1) >= 0 && (currentImg - 1) < images.length - 1) {
-            currentImg -= 1;
-            images[currentImg].style.display = 'block';
-            currentImageNumber.textContent = (images.length < 10) ?
-                `0${currentImg + 1}` : `${currentImg + 1}`;
-        }    
-    } else if (e.target === nextArrow || e.target === nextArrow.querySelector('img')) {
-        images.forEach(item => {
-            item.style.display = 'none';
-        });
-        if (currentImg + 1 > images.length - 1) {
-            currentImg = 0;
-            images[currentImg].style.display = 'block';
-            currentImageNumber.textContent = (images.length < 10) ?
-                `0${currentImg + 1}` : `${currentImg + 1}`;
-        } else if ((currentImg + 1) >= 0 && (currentImg - 1) < images.length - 1) {
-            currentImg += 1;
-            images[currentImg].style.display = 'block';
-            currentImageNumber.textContent = (images.length < 10) ?
-                `0${currentImg + 1}` : `${currentImg + 1}`;
+// sliderCounter.addEventListener('click', (e) => {
+//     if (e.target === prevArrow || e.target === prevArrow.querySelector('img')) {
+//         images.forEach(item => {
+//             item.style.display = 'none';
+//         });
+//         if (currentImg - 1 < 0) {
+//             currentImg = images.length - 1;
+//             images[currentImg].style.display = 'block';
+//             currentImageNumber.textContent = (images.length < 10) ?
+//                 `0${currentImg + 1}` : `${currentImg + 1}`;
+//         } else if ((currentImg - 1) >= 0 && (currentImg - 1) < images.length - 1) {
+//             currentImg -= 1;
+//             images[currentImg].style.display = 'block';
+//             currentImageNumber.textContent = (images.length < 10) ?
+//                 `0${currentImg + 1}` : `${currentImg + 1}`;
+//         }    
+//     } else if (e.target === nextArrow || e.target === nextArrow.querySelector('img')) {
+//         images.forEach(item => {
+//             item.style.display = 'none';
+//         });
+//         if (currentImg + 1 > images.length - 1) {
+//             currentImg = 0;
+//             images[currentImg].style.display = 'block';
+//             currentImageNumber.textContent = (images.length < 10) ?
+//                 `0${currentImg + 1}` : `${currentImg + 1}`;
+//         } else if ((currentImg + 1) >= 0 && (currentImg - 1) < images.length - 1) {
+//             currentImg += 1;
+//             images[currentImg].style.display = 'block';
+//             currentImageNumber.textContent = (images.length < 10) ?
+//                 `0${currentImg + 1}` : `${currentImg + 1}`;
 
-        }
-    }
-});
+//         }
+//     }
+// });
+
+//----------------------------------------
