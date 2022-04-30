@@ -507,29 +507,30 @@
 // }
 // console.log(factorial(23.2));
 
-function findOutlier(integers) {
-    let oddNums = 0;
-    let evenNums = 0;
-    for (let i = 0; i < 3; i++) {
-        if (integers[i] % 2 === 0) {
-            evenNums += 1;
-        } else {
-            oddNums += 1;
-        }
-    }
-    if (oddNums > evenNums) {
-        for (let j = 0; j < integers.length; j++) {
-            if (integers[j] % 2 === 0) {
-                return integers[j];
-            }
-        }
-    } else {
-        for (let k = 0; k < integers.length; k++) {
-            if (integers[k] % 2 !== 0) {
-                return integers[k];
-            }
-        }
-    }
-}
+// function findOutlier(integers) {
+//     let oddNums = 0;
+//     let evenNums = 0;
+//     for (let i = 0; i < 3; i++) {
+//         if (integers[i] % 2 === 0) {
+//             evenNums += 1;
+//         } else {
+//             oddNums += 1;
+//         }
+//     }
+//     if (oddNums > evenNums) {
+//         for (let j = 0; j < integers.length; j++) {
+//             if (integers[j] % 2 === 0) {
+//                 return integers[j];
+//             }
+//         }
+//     } else {
+//         for (let k = 0; k < integers.length; k++) {
+//             if (integers[k] % 2 !== 0) {
+//                 return integers[k];
+//             }
+//         }
+//     }
+// }
 
-console.log(findOutlier([160, 3, 1719, 19, 11, 13, -21]));
+// console.log(findOutlier([160, 3, 1719, 19, 11, 13, -21]));
+

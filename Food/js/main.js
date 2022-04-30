@@ -99,12 +99,20 @@ const deadline = '2022-03-29';
 
 
 function setClock() {
+    let days, hours, minutes, seconds;
     const total = Date.parse(deadline) - (new Date()); //значение времени до deadline в миллисекундах
 
-    const days = Math.floor(total / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
-    const minutes = Math.floor(total / (1000 * 60) % 60);
-    const seconds = Math.floor(total / 1000 % 60);
+    if (total <= 0) {
+        days = 0;
+        hours = 0;
+        minutes = 0;
+        seconds = 0;
+    } else {
+        days = Math.floor(total / (1000 * 60 * 60 * 24));
+        hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+        minutes = Math.floor(total / (1000 * 60) % 60);
+        seconds = Math.floor(total / 1000 % 60);
+    }
 
     return {
         total,
@@ -431,4 +439,10 @@ forms.forEach(item => {
     postData(item);
 });
 
+
+
 // Fetch API
+
+fetch('http://localhost:3000/menu')
+    .then(data => data.json())
+    .then(res => console.log(res));
