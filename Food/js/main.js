@@ -1,8 +1,7 @@
 'use strict';
 
 // tabs
-const tabButtons = document.querySelectorAll('.tabheader__item'),
-    tabs = document.querySelectorAll('.tabcontent'),
+const tabButtons = document.querySelectorAll('.tabheader__item'), tabs = document.querySelectorAll('.tabcontent'),
     tabHeader = document.querySelector('.tabheader__items');
 
 function hideTabs() {
@@ -20,13 +19,14 @@ function showTabs(i = 0) {
     tabs[i].classList.remove('hide');
     tabButtons[i].classList.add('tabheader__item_active');
 }
+
 hideTabs();
 showTabs();
 
 tabHeader.addEventListener('click', (e) => {
     if (e.target && e.target.classList.contains('tabheader__item')) {
         tabButtons.forEach((tab, i) => {
-            if (e.target == tab) {
+            if (e.target === tab) {
                 hideTabs();
                 showTabs(i);
             }
@@ -115,11 +115,7 @@ function setClock() {
     }
 
     return {
-        total,
-        days,
-        hours,
-        minutes,
-        seconds
+        total, days, hours, minutes, seconds
     };
 
 }
@@ -129,10 +125,8 @@ function getZero2(time) {
 }
 
 function setTimer(endtime) {
-    const timer = document.querySelector('.timer'),
-        days = timer.querySelector('#days'),
-        hours = timer.querySelector('#hours'),
-        minutes = timer.querySelector('#minutes'),
+    const timer = document.querySelector('.timer'), days = timer.querySelector('#days'),
+        hours = timer.querySelector('#hours'), minutes = timer.querySelector('#minutes'),
         seconds = timer.querySelector('#seconds');
     const timeInterval = setInterval(runTimer, 1000);
 
@@ -165,8 +159,7 @@ setTimer(deadline);
 
 // модальное окно
 
-const modalTrigger = document.querySelectorAll('[data-modal]'),
-    modal = document.querySelector('.modal');
+const modalTrigger = document.querySelectorAll('[data-modal]'), modal = document.querySelector('.modal');
 
 function openModal() {
     modal.classList.add('show');
@@ -188,7 +181,7 @@ modalTrigger.forEach(btn => {
 });
 
 modal.addEventListener('click', (e) => {
-    if (e.target === modal || e.target.getAttribute('data-close') == '') {
+    if (e.target === modal || e.target.getAttribute('data-close') === '') {
         closeModal();
     }
 });
@@ -210,24 +203,28 @@ function showModalByScroll() {
 
 window.addEventListener('scroll', showModalByScroll);
 
-
+//--------------------------------------------------
 //? карточки с меню (Классы)
 // const cartHolders = document.querySelectorAll('.menu__item');
-const names = ['Фитнес', 'Премиум', 'Не очень Постное'];
-const images = ['img/tabs/vegy.jpg', 'img/tabs/elite.jpg', 'img/tabs/post.jpg'];
-const alts = ['Фитнес', 'Ghtvbev', 'Не очень Постное'];
-const infos = [`Меню "Фитнес" - это новый подход к приготовлению блюд:
-                больше свежих овощей и фруктов. Продукт активных и здоровых людей.
-                Это абсолютно новый продукт с оптимальной ценой и высоким качеством!`,
-    `В меню “Премиум” мы используем не только красивый дизайн упаковки,
-                но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты -
-                ресторанное меню без похода в ресторан!`,
-    `Меню “Постное” - это тщательный подбор ингредиентов:
-                полное отсутствие продуктов животного происхождения, молоко из миндаля,
-                овса, кокоса или гречки, правильное количество белков за счет тофу
-                и импортных вегетарианских стейков.`
-];
-const prices = [200, 500, 300];
+// const names = ['Фитнес', 'Премиум', 'Не очень Постное'];
+// const images = ['img/tabs/vegy.jpg', 'img/tabs/elite.jpg', 'img/tabs/post.jpg'];
+// const alts = ['Фитнес', 'Ghtvbev', 'Не очень Постное'];
+// const infos = [`Меню "Фитнес" - это новый подход к приготовлению блюд:
+//                 больше свежих овощей и фруктов. Продукт активных и здоровых людей.
+//                 Это абсолютно новый продукт с оптимальной ценой и высоким качеством!`,
+//     `В меню “Премиум” мы используем не только красивый дизайн упаковки,
+//                 но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты -
+//                 ресторанное меню без похода в ресторан!`,
+//     `Меню “Постное” - это тщательный подбор ингредиентов:
+//                 полное отсутствие продуктов животного происхождения, молоко из миндаля,
+//                 овса, кокоса или гречки, правильное количество белков за счет тофу
+//                 и импортных вегетарианских стейков.`
+// ];
+// const prices = [200, 500, 300];
+//--------------------------------------------------------------------------------
+
+
+//КЛАСС для создания карточек
 class FoodCart {
     constructor(name, img, alt, info, price, element, parentSelector, ...classes) {
         this.name = name;
@@ -241,6 +238,7 @@ class FoodCart {
         this.transfer = 0.7;
         this.changeToUAH();
     }
+
     madeCart() {
         const divElement = document.createElement(this.element);
         //? если классы не указаны (...rest в аргументах функции пустой!)
@@ -252,7 +250,7 @@ class FoodCart {
 
         divElement.innerHTML = `
             <img src=${this.img} alt=${this.alt}>
-            <h3 class="menu__item-subtitle">Меню ${this.name}</h3>
+            <h3 class="menu__item-subtitle">${this.name}</h3>
             <div class="menu__item-descr">${this.info}</div>
             <div class="menu__item-divider"></div>
             <div class = "menu__item-price">
@@ -262,29 +260,78 @@ class FoodCart {
         `;
         this.parent.append(divElement);
     }
+
     changeToUAH() {
-        this.price = this.price * this.transfer;
+        this.price = (this.price * this.transfer).toFixed(2);
     }
 }
 
-const newCart = new FoodCart(
-    names[1], images[1], alts[1],
-    infos[1], prices[1], 'div',
-    '.menu__field .container',
-    'menu__item', 'big');
-newCart.madeCart(); //! стандартный метод создания 
-const secondCart = new FoodCart(
-    names[0], images[0], alts[0],
-    infos[0], prices[0], 'div',
-    '.menu__field .container',
-);
-secondCart.madeCart();
+// функция для создания карточек с товаром из db.json
+// const getResource = async (url) => {
+//     const res = await fetch(url);
+//     if (!res.ok) {
+//         throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+//     }
+//     return await res.json();
+// };
 
-new FoodCart(
-    names[2], images[2], alts[2],
-    infos[2], prices[2], 'div',
-    '.menu__field .container',
-).madeCart();
+//? вызов функции для создания карточек с использованием библиотеки 
+//? axios
+axios.get('http://localhost:3000/menu')
+    .then(data => {
+        data.data.forEach(({name, img, alt, info, price
+        }) => {
+            new FoodCart(name, img, alt, info, price, 'div', '.menu .container').madeCart();
+        });
+    });
+
+
+
+// вызов функции для создаия карточек из базы данны (db.json) "best practice?"
+// getRes 
+
+
+//---------------------------------------------------------------
+//вариант создания без класса и без шаблонизации
+// getResource('http://localhost:3000/menu')
+//     .then(data => createCart(data));
+//
+// function createCart(data) {
+// data.forEach(({name, img, alt, info, price}) => {
+//     const element = document.createElement('div');
+//     element.classList.add('menu__item');
+//     element.innerHTML = `
+//         <img src=${img} alt=${alt}>
+//         <h3 class="menu__item-subtitle">${name}</h3>
+//         <div class="menu__item-descr">${info}</div>
+//         <div class="menu__item-divider"></div>
+//         <div class = "menu__item-price">
+//             <div class="menu__item-cost"> Цена: </div>
+//             <div class="menu__item-total"><span>${price}</span> грн/день </div>
+//         </div>
+//     `
+//     document.querySelector('.menu .container').append(element);
+// });
+
+//---------------------------------------------------------------
+// const newCart = new FoodCart(
+//     names[1], images[1], alts[1],
+//     infos[1], prices[1], 'div',
+//     '.menu__field .container',
+//     'menu__item', 'big');
+// newCart.madeCart(); //! стандартный метод создания
+// const secondCart = new FoodCart(
+//     names[0], images[0], alts[0],
+//     infos[0], prices[0], 'div',
+//     '.menu__field .container',
+// );
+// secondCart.madeCart();
+//
+// new FoodCart(
+//     names[2], images[2], alts[2],
+//     infos[2], prices[2], 'div',
+//     '.menu__field .container',
+// ).madeCart();
 
 // ? Forms
 
@@ -338,6 +385,7 @@ new FoodCart(
 // forms.forEach(item => {
 //     postData(item);
 // });
+//---------------------------------------------------------------
 
 //! Forms
 const forms = document.querySelectorAll('form');
@@ -348,7 +396,16 @@ const responseMessages = {
     error: 'Что-то пошло не так, попробуйте ещё раз:)'
 };
 
-function postData(form) {
+const postData = async (url, data) => {
+    const res = await fetch(url, {
+        method: 'POST', headers: {
+            'Content-type': 'application/json' //для JSON
+        }, body: data
+    });
+    return await res.json();
+};
+
+function bindPostData(form) {
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         const messageDiv = document.createElement('img');
@@ -361,19 +418,15 @@ function postData(form) {
 
         const formData = new FormData(form);
 
-        const object = {};
-        formData.forEach((key, value) => {
-            object[key] = value;
-        });
-        
-        fetch('server.php', {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json' //для JSON
-            },
-            body: JSON.stringify(object)
-            })
-            .then(data => data.text()) //перевести ответ в формат данных 'text'
+        // const object = {};
+        // formData.forEach((key, value) => {
+        //     object[key] = value;
+        // });
+
+        const json = JSON.stringify(Object.fromEntries(formData.entries()));
+
+
+        postData('http://localhost:3000/requests', json)
             .then(data => {
                 console.log(data);
                 showTanksModal(responseMessages.success);
@@ -381,11 +434,10 @@ function postData(form) {
                     messageDiv.remove();
                 }, 3000);
             }).catch(() => {
-                showTanksModal(responseMessages.error); //не появится в этой конструкции
-            }).finally(() => {
-                form.reset();
-            });
-
+            showTanksModal(responseMessages.error); //не появится в этой конструкции
+        }).finally(() => {
+            form.reset();
+        });
 
 
         // ! устаревший способ передачи данных
@@ -409,6 +461,7 @@ function postData(form) {
         // });
     });
 }
+
 
 function showTanksModal(message) {
     const prevModalDialog = document.querySelector('.modal__dialog');
@@ -436,13 +489,176 @@ function showTanksModal(message) {
 }
 
 forms.forEach(item => {
+<<<<<<< HEAD
     postData(item);
+});
+=======
+    bindPostData(item);
 });
 
 
 
-// Fetch API
 
-fetch('http://localhost:3000/menu')
-    .then(data => data.json())
-    .then(res => console.log(res));
+//? Слайдер 
+
+//переменные
+const images = document.querySelectorAll('.offer__slide'),
+      slider = document.querySelector('.offer__slider'),
+      sliderCounter = document.querySelector('.offer__slider-counter'),
+      totalImg = document.querySelector('#total'),
+      currentImageNumber = document.querySelector('#current'),
+      prevArrow = document.querySelector('.offer__slider-prev'),
+      nextArrow = document.querySelector('.offer__slider-next'),
+      slideWrapper = document.querySelector('.offer__slider-wrapper'),
+      sliderField = document.querySelector('.offer__slider-inner'),
+      width = window.getComputedStyle(slideWrapper).width;
+// установка настроек для слайдера - карусели
+let currentImg = 1;
+let offset = 0;
+sliderField.style.width = 100 * images.length + '%';
+sliderField.style.display = 'flex';
+sliderField.style.transition = '.45s all';
+slideWrapper.style.overflow = 'hidden';
+images.forEach(img => {
+    img.style.width = width;
+});
+//функция для установки номеров текущего и  общего слайда
+function getRightNum(field, num) {
+    if (num < 10) {
+        field.textContent = `0${num}`;
+    } else {
+        field.textContent = `${num}`;
+    }
+}
+getRightNum(currentImageNumber, currentImg);
+getRightNum(totalImg, images.length);
+
+//создание точек под слайдером
+const divDots = document.createElement("div");
+divDots.style.height ='25px';
+divDots.style.margin = '0 auto';
+divDots.style.top = '20px';
+divDots.cssText = `
+    position: 'absolute';
+    display: flex;
+    margin-left = '15%';
+    margin-right = '15%';
+
+`;
+
+// slider.style.position = 'relative';
+
+images.forEach(() => {
+    const dot = document.createElement('button');
+    dot.classList.add('dot-button');
+    dot.style.width = '25px';
+    dot.style.height = '10px';
+    dot.style.border = 'none';
+    dot.style.borderRadius = '18%';
+    dot.style.backgroundColor = 'lightgrey';
+    dot.style.margin = '10px';
+    dot.style.transform = 'translateY(-40px)';
+    // dot.style.border = 'solid 2px white';
+    dot.style.opacity = '0.8';
+    divDots.append(dot);
+});
+slider.append(divDots);
+
+
+const dots = document.querySelectorAll('.dot-button');
+
+dots.forEach((item, index, alldots) => {
+    item.style.backgroundColor = 'grey';
+    item.addEventListener('click', (e) => {
+        offset = parseInt(width) * index;
+        sliderField.style.transform = `translateX(-${offset}px`;
+        alldots.forEach(dot => {
+            dot.style.backgroundColor = 'grey';
+        });
+        item.style.backgroundColor = 'white';
+        getRightNum(currentImageNumber, index + 1);
+    });
+});
+
+function getSlideRightDotsAndNumbs() {
+    sliderField.style.transform = `translateX(-${offset}px`;
+    currentImg = (offset / parseInt(width)) + 1;
+    dots.forEach(dot => {
+        dot.style.backgroundColor = 'grey';
+    });
+    dots[currentImg - 1].style.backgroundColor = 'white';
+    getRightNum(currentImageNumber, currentImg);
+}
+
+
+dots[currentImg - 1].style.backgroundColor = 'white';
+nextArrow.addEventListener('click', () => {
+    if (offset === parseInt(width) * (images.length - 1)) {
+        offset = 0;
+    } else {
+        offset += parseInt(width);
+    }
+    getSlideRightDotsAndNumbs();
+});
+prevArrow.addEventListener('click', () => {
+    if (offset === 0) {
+        offset = parseInt(width) * (images.length - 1);
+    } else {
+        offset -= parseInt(width);
+    }
+    getSlideRightDotsAndNumbs();
+});
+
+
+
+
+// ? -----------------------------------
+// todo Мой вариант
+// оставить первую картинку
+// images.forEach(img => {
+//     img.style.display = 'none';
+//     img.classList.add('fade');
+// });
+// images[0].style.display = 'block';
+>>>>>>> 06d05730c189df5c3434b4f95e1fabed3ee92fea
+
+// let currentImg = 0;
+// currentImageNumber.textContent = `0${currentImg + 1}`;
+
+// функция в прослушивателе событий простой вариант через display или классы
+// sliderCounter.addEventListener('click', (e) => {
+//     if (e.target === prevArrow || e.target === prevArrow.querySelector('img')) {
+//         images.forEach(item => {
+//             item.style.display = 'none';
+//         });
+//         if (currentImg - 1 < 0) {
+//             currentImg = images.length - 1;
+//             images[currentImg].style.display = 'block';
+//             currentImageNumber.textContent = (images.length < 10) ?
+//                 `0${currentImg + 1}` : `${currentImg + 1}`;
+//         } else if ((currentImg - 1) >= 0 && (currentImg - 1) < images.length - 1) {
+//             currentImg -= 1;
+//             images[currentImg].style.display = 'block';
+//             currentImageNumber.textContent = (images.length < 10) ?
+//                 `0${currentImg + 1}` : `${currentImg + 1}`;
+//         }    
+//     } else if (e.target === nextArrow || e.target === nextArrow.querySelector('img')) {
+//         images.forEach(item => {
+//             item.style.display = 'none';
+//         });
+//         if (currentImg + 1 > images.length - 1) {
+//             currentImg = 0;
+//             images[currentImg].style.display = 'block';
+//             currentImageNumber.textContent = (images.length < 10) ?
+//                 `0${currentImg + 1}` : `${currentImg + 1}`;
+//         } else if ((currentImg + 1) >= 0 && (currentImg - 1) < images.length - 1) {
+//             currentImg += 1;
+//             images[currentImg].style.display = 'block';
+//             currentImageNumber.textContent = (images.length < 10) ?
+//                 `0${currentImg + 1}` : `${currentImg + 1}`;
+
+//         }
+//     }
+// });
+
+//----------------------------------------
