@@ -1,17 +1,17 @@
 "use strict";
 
-function slider() {
+function slider({container, slides, nextArr, prevArr, totalImage, currImg, wrapper, field}) {
 	//? Слайдер
 
 //переменные
-	const images = document.querySelectorAll('.offer__slide'),
-		slider = document.querySelector('.offer__slider'),
-		totalImg = document.querySelector('#total'),
-		currentImageNumber = document.querySelector('#current'),
-		prevArrow = document.querySelector('.offer__slider-prev'),
-		nextArrow = document.querySelector('.offer__slider-next'),
-		slideWrapper = document.querySelector('.offer__slider-wrapper'),
-		sliderField = document.querySelector('.offer__slider-inner'),
+	const images = document.querySelectorAll(slides),
+		slider = document.querySelector(container),
+		totalImg = document.querySelector(totalImage),
+		currentImageNumber = document.querySelector(currImg),
+		prevArrow = document.querySelector(prevArr),
+		nextArrow = document.querySelector(nextArr),
+		slideWrapper = document.querySelector(wrapper),
+		sliderField = document.querySelector(field),
 		width = window.getComputedStyle(slideWrapper).width;
 // установка настроек для слайдера - карусели
 	let currentImg = 1;

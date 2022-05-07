@@ -1,13 +1,9 @@
 "use strict";
 
-function timer() {
-
-	const deadline = '2022-05-29';
-
-
+function timer(selector, deadLine) {
 	function setClock() {
 		let days, hours, minutes, seconds;
-		const total = Date.parse(deadline) - (new Date()); //значение времени до deadline в миллисекундах
+		const total = Date.parse(deadLine) - (new Date()); //значение времени до deadline в миллисекундах
 
 		if (total <= 0) {
 			days = 0;
@@ -32,7 +28,7 @@ function timer() {
 	}
 
 	function setTimer(endtime) {
-		const timer = document.querySelector('.timer'), days = timer.querySelector('#days'),
+		const timer = document.querySelector(selector), days = timer.querySelector('#days'),
 			hours = timer.querySelector('#hours'), minutes = timer.querySelector('#minutes'),
 			seconds = timer.querySelector('#seconds');
 		const timeInterval = setInterval(runTimer, 1000);
@@ -48,10 +44,10 @@ function timer() {
 				seconds.innerText = getZero2(time.seconds);
 			} else {
 				clearInterval(timeInterval);
-				days.innerText = '00';
-				hours.innerText = '00';
-				minutes.innerText = '00';
-				seconds.innerText = '00';
+				days.textContent = '00';
+				hours.textContent = '00';
+				minutes.textContent = '00';
+				seconds.textContent = '00';
 
 				days.parentElement.style.backgroundColor = 'red';
 				hours.parentElement.style.backgroundColor = 'red';
@@ -61,7 +57,7 @@ function timer() {
 		}
 	}
 
-	setTimer(deadline);
+	setTimer(deadLine);
 }
 
 export default timer;

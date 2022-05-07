@@ -1,5 +1,7 @@
 "use strict";
 
+import {getResource} from "./services/services";
+
 function cards() {
 
 //--------------------------------------------------
@@ -63,6 +65,7 @@ function cards() {
 			this.price = (this.price * this.transfer).toFixed(2);
 		}
 	}
+
 //--------------------------------------
 // функция для создания карточек с товаром из db.json
 // const getResource = async (url) => {
@@ -75,16 +78,16 @@ function cards() {
 //--------------------------------------
 
 //? вызов функции для создания карточек с использованием библиотеки
-//? axios
-	axios.get('http://localhost:3000/menu')
-		.then(data => {
-			data.data.forEach(({
-				                   name, img, alt, info, price
-			                   }) => {
-				new FoodCart(name, img, alt, info, price, 'div', '.menu .container').madeCart();
-			});
-		});
-
+// //? axios
+// 	axios.get('http://localhost:3000/menu')
+// 		.then(data => {
+// 			data.data.forEach(({
+// 				                   name, img, alt, info, price
+// 			                   }) => {
+// 				new FoodCart(name, img, alt, info, price, 'div', '.menu .container').madeCart();
+// 			});
+// 		});
+//
 
 // вызов функции для создаия карточек из базы данны (db.json) "best practice?"
 // getRes
@@ -109,9 +112,20 @@ function cards() {
 //     infos[2], prices[2], 'div',
 //     '.menu__field .container',
 // ).madeCart();
-}
-export default cards;
 
+	getResource('http://localhost:3000/menu')
+		.then(data => {
+			data.forEach(({
+				              name, img, alt, info, price
+			              }) => {
+				new FoodCart(name, img, alt, info, price, 'div', '.menu .container').madeCart();
+			});
+
+		});
+
+}
+
+export default cards;
 //---------------------------------------------------------------
 //вариант создания без класса и без шаблонизации
 // getResource('http://localhost:3000/menu')
