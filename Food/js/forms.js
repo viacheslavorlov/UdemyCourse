@@ -1,9 +1,9 @@
 "use strict";
 
-function forms() {
-
+import {closeModal, openModal} from './modal';
 //! Forms
-	const forms = document.querySelectorAll('form');
+function forms(formSelector, modalTimerId) {
+	const forms = document.querySelectorAll(formSelector);
 
 	const responseMessages = {
 		success: 'Передача данных прошла успешно! Мы с вами свяжемся!',
@@ -47,7 +47,7 @@ function forms() {
 					showTanksModal(responseMessages.success);
 					setTimeout(() => {
 						messageDiv.remove();
-					}, 3000);
+					}, 5000);
 				}).catch(() => {
 				showTanksModal(responseMessages.error); //не появится в этой конструкции
 			}).finally(() => {
@@ -82,7 +82,7 @@ function forms() {
 		const prevModalDialog = document.querySelector('.modal__dialog');
 
 		prevModalDialog.classList.add('hide');
-		openModal();
+		openModal('.modal', modalTimerId);
 
 		const tanksModal = document.createElement('div');
 		tanksModal.classList.add('modal__dialog');
@@ -99,7 +99,7 @@ function forms() {
 			tanksModal.remove();
 			prevModalDialog.classList.add('show');
 			prevModalDialog.classList.remove('hide');
-			closeModal();
+			closeModal('.modal');
 		}, 4000);
 	}
 
@@ -108,7 +108,7 @@ function forms() {
 	});
 }
 
-module.exports = forms;
+export default forms;
 
 
 // ? Forms

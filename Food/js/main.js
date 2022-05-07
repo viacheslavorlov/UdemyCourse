@@ -1,24 +1,23 @@
 'use strict';
+import calculator from './calc';
+import cards from './cards';
+import forms from './forms';
+import modal from './modal';
+import slider from './slider';
+import tabs from './tabs';
+import timer from './timer';
+import {openModal} from './modal';
+
+
 document.addEventListener('DOMContentLoaded', () => {
-	const tabs = require('./tabs');
+
+	const modalTimerId = setTimeout(() => openModal('.modal', modalTimerId), 8000);
+
 	tabs();
-
-	const timer = require('./timer');
 	timer();
-
-	const cards = require('./cards');
 	cards();
-
-	const forms = require('./forms');
-	forms();
-
-	const modal = require('./modal');
-	modal();
-
-	const slider = require('./slider');
+	forms('form', modalTimerId);
+	modal('[data-modal]', '.modal', modalTimerId);
 	slider();
-
-	const calculator = require('./calc');
 	calculator();
-
-})
+});

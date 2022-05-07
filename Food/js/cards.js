@@ -110,7 +110,7 @@ function cards() {
 //     '.menu__field .container',
 // ).madeCart();
 }
-module.exports = cards;
+export default cards;
 
 //---------------------------------------------------------------
 //вариант создания без класса и без шаблонизации

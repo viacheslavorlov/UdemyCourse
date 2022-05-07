@@ -64,7 +64,7 @@ function timer() {
 	setTimer(deadline);
 }
 
-module.exports = timer;
+export default timer;
 
 //! deadline
 // const deadline = '2022-03-21';

@@ -36,4 +36,4 @@ function tabs() {           // tabs
 	});
 }
 
-module.exports = tabs;
+export default tabs;

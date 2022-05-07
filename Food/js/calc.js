@@ -69,7 +69,7 @@ function calculator() {
 
 	activityLevels.forEach((activity, i) => activity.addEventListener('click', () => {
 			activityLevels.forEach(item => item.classList.remove('calculating__choose-item_active'));
-			activity.classList.add('calculating__choose-item_active')
+			activity.classList.add('calculating__choose-item_active');
 			currentActivity = (1.2 + i * 0.175).toFixed(3);
 			localStorage.setItem('currentActivity', currentActivity);
 			getCall();
@@ -77,4 +77,4 @@ function calculator() {
 	));
 }
 
-module.exports = calculator;
+export default calculator;
