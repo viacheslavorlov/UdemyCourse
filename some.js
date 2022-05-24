@@ -1,3 +1,10 @@
 'use strict';
 
-console.log('Some More Tests...');
+function transformMsg(str) {
+
+	// Пропущенная часть
+
+	return b;
+}
+
+transformMsg(msg)
