@@ -4,9 +4,9 @@ import SearchPanel from "../search-panel/search-panel";
 import AppFilter from "../app-filter/app-filter";
 import EmployeesList from "../employees-list/employees-list";
 import EmployeesAddForm from "../employees-add-form/employees-add-form";
-import WhoAmI from "../test/state";
+// import WhoAmI from "../test/state";
 
-const propInfo = {name: 'john', surname: 'doe'};
+// const propInfo = {name: 'john', surname: 'doe'};
 
 function App() {
 
@@ -18,7 +18,7 @@ function App() {
 
 	return (
 		<div className='app'>
-			<WhoAmI {...propInfo}/>
+			{/*<WhoAmI {...propInfo}/>*/}
 			<AppInfo/>
 
 			<div className="search-panel">
