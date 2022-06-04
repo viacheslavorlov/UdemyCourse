@@ -1,4 +1,5 @@
-import { Component } from "react";
+import {Component} from "react";
+import nextId from "react-id-generator";
 
 import './app.css';
 
@@ -22,6 +23,7 @@ class App extends Component {
 	}
 
 	deleteItem = id => {
+		console.log(id)
 		this.setState(({data}) => {
 			// const index = data.findIndex(elem => elem.id === id);
 			// const before = data.slice(0, index);
@@ -37,6 +39,24 @@ class App extends Component {
 		});
 	}
 
+	addNewEmployee = (name, salary) => {
+		const idForEmployee = nextId();
+		if (name !== null && salary !== null) {
+			const newEmployeeData = {
+				name,
+				salary,
+				increase: false,
+				id: idForEmployee
+			}
+			this.setState(({data}) => {
+				const newData = [...data, newEmployeeData]
+				return {
+					data: newData
+				}
+			});
+		}
+	}
+
 	render() {
 		return (
 			<div className='app'>
@@ -49,10 +69,12 @@ class App extends Component {
 				</div>
 				<div>
 					<EmployeesList data={this.state.data}
-					               onDelete={this.deleteItem}/>
+					               onDelete={this.deleteItem}
+					/>
 				</div>
 				<div>
-					<EmployeesAddForm/>
+					<EmployeesAddForm
+						onAdd={this.addNewEmployee}/>
 				</div>
 			</div>
 		);
