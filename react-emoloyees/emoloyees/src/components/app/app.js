@@ -3,11 +3,13 @@ import nextId from "react-id-generator";
 
 import './app.css';
 
+import fragments from "../test/fragments";
 import AppInfo from "../app-info/app-info";
 import SearchPanel from "../search-panel/search-panel";
 import AppFilter from "../app-filter/app-filter";
 import EmployeesList from "../employees-list/employees-list";
 import EmployeesAddForm from "../employees-add-form/employees-add-form";
+import WhoAmI from "../test/fragments";
 
 
 class App extends Component {
@@ -95,8 +97,9 @@ class App extends Component {
 		const employeesOnIncrease = this.state.data.filter(item => item.increase).length;
 
 		return (
-			<div className='app'>
 
+			<div className='app'>
+				{/*<WhoAmI name={'alex'} surname={'smith'} myLink={'www.vk.com'}/>*/}
 				<AppInfo employees={employees} employeesOnIncrease={employeesOnIncrease}/>
 
 				<div className="search-panel">
