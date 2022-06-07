@@ -3,13 +3,12 @@ import nextId from "react-id-generator";
 
 import './app.css';
 
-import fragments from "../test/fragments";
 import AppInfo from "../app-info/app-info";
 import SearchPanel from "../search-panel/search-panel";
 import AppFilter from "../app-filter/app-filter";
 import EmployeesList from "../employees-list/employees-list";
 import EmployeesAddForm from "../employees-add-form/employees-add-form";
-import WhoAmI from "../test/fragments";
+
 
 
 class App extends Component {
@@ -17,10 +16,13 @@ class App extends Component {
 		super(props);
 		this.state = {
 			data: [
-				{name: 'Linch', salary: 11000, increase: false, like: true, id: 1},
-				{name: 'John', salary: 3000, increase: true, like: false, id: 2},
-				{name: 'Albert', salary: 5000, increase: false, like:false, id: 3}
-			]
+				{name: 'Linch', salary: 11000, increase: false, like: true, id: nextId()},
+				{name: 'John', salary: 3000, increase: true, like: false, id: nextId()},
+				{name: 'Albert', salary: 5000, increase: false, like:false, id: nextId()}
+			],
+			visibleData: [],
+			term: '',
+			filterArg: ''
 		}
 	}
 
@@ -42,13 +44,12 @@ class App extends Component {
 	}
 
 	addNewEmployee = (name, salary) => {
-		const idForEmployee = nextId();
 
 		const newEmployeeData = {
 			name,
 			salary,
 			increase: false,
-			id: idForEmployee
+			id: nextId()
 		}
 		this.setState(({data}) => {
 			const newData = [...data, newEmployeeData]
@@ -92,9 +93,49 @@ class App extends Component {
 		}))
 	}
 
+	searchEmployee = (items, term) => {
+		if (term.length === 0) {
+			return items;
+		}
+		return items.filter(item => item.name.indexOf(term) > -1);
+	}
+
+	onUpdateSearch = (term) => {
+		this.setState({term});
+	}
+
+	filterArgChange = (filterArg) => {
+		this.setState({filterArg});
+	}
+
+	filterEmployee = (items, arg) => {
+		switch (arg) {
+			case 'like':
+				return items.filter(item => item.like);
+			case 'salary':
+				return items.filter(item => item.salary > 4000);
+			default:
+				return items;
+		}
+	}
+	//
+	// changeSalary = (id, newSalary) => {
+	// 	this.setState(({...data}) => ({
+	// 		data: data.map(item => {
+	// 			if (item.id === id) {
+	// 				return {...item, salary: newSalary};
+	// 			}
+	// 			return item;
+	// 		})
+	// 	}));
+	// }
+
 	render() {
+		const { data, term, filterArg} = this.state;
 		const employees = this.state.data.length;
 		const employeesOnIncrease = this.state.data.filter(item => item.increase).length;
+
+		const visibleData = this.filterEmployee(this.searchEmployee(data, term), filterArg);
 
 		return (
 
@@ -103,14 +144,17 @@ class App extends Component {
 				<AppInfo employees={employees} employeesOnIncrease={employeesOnIncrease}/>
 
 				<div className="search-panel">
-					<SearchPanel/>
-					<AppFilter/>
+					<SearchPanel onUpdateSearch={this.onUpdateSearch}/>
+					<AppFilter filterEmployee={this.filterEmployee}
+					           data={visibleData}
+							   filterArgChange={this.filterArgChange}/>
 				</div>
 				<div>
-					<EmployeesList data={this.state.data}
+					<EmployeesList data={visibleData}
 					               onDelete={this.deleteItem}
 								   onToggleIncrease={this.onToggleIncrease}
 								   onToggleRise={this.onToggleRise}
+								   changeSalary={this.changeSalary}
 					/>
 				</div>
 				<div>

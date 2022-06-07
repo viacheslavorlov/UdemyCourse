@@ -2,7 +2,7 @@ import './employees-list-item.css';
 
 const EmployeesListItem = (props) => {
 
-    const {name, salary, onDelete, onToggleRise, onToggleIncrease, increase, like} = props;
+    const {name, salary, onDelete, onToggleRise, onToggleIncrease, increase, like/*, changeSalary, key*/} = props;
 
     const adIncrease = (increase) ? ' increase' : '';
     const adLike = (like) ? ' like' : '';
@@ -13,7 +13,9 @@ const EmployeesListItem = (props) => {
         }>
             <span className="list-group-item-label" onClick={onToggleRise}>{name}</span>
             <input type="text"
-                   className="list-group-item-input" defaultValue={salary + '$'}/>
+                   className="list-group-item-input"
+                   defaultValue={salary + '$'}
+                   /*onChange={() => changeSalary(key, this.value)}*//>
             <div className={'d-flex justify-content-center align-items-center'}>
                 <button type={'button'}
                         onClick={onToggleIncrease}
