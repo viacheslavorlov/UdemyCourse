@@ -21,22 +21,24 @@ class AppFilter extends Component {
     render() {
 
         const buttonsData = [
-            {name: 'all', label: 'Все сотрудники'},
-            {name: 'like', label: 'На повышение'},
-            {name: 'salary', label: 'Зарплата больше 4000$'}
+            {name: 'all', label: 'Все сотрудники', colored: false},
+            {name: 'like', label: 'На повышение', colored: false},
+            {name: 'salary', label: 'Зарплата больше 4000$', colored: true}
         ];
 
-        const buttons = buttonsData.map(({name, label}) => {
+        const buttons = buttonsData.map(({name, label,colored}) => {
 
             const active = this.state.filterArg === name;
             const clazz = active ? 'btn-light' : 'btn-outline-light';
+            const style = colored ? {color: 'red'} : null;
             return (
                 <button
                     className={`btn ${clazz}`}
                     type={'button'}
                     onClick={this.filterEmployee}
                     datafld={name}
-                    key={name}>
+                    key={name}
+                    style={style}>
                     {label}
                 </button>
             )
