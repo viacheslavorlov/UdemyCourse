@@ -8,7 +8,8 @@ import SearchPanel from "../search-panel/search-panel";
 import AppFilter from "../app-filter/app-filter";
 import EmployeesList from "../employees-list/employees-list";
 import EmployeesAddForm from "../employees-add-form/employees-add-form";
-
+import BootstrapTest from "../test/bootstrap-test";
+import WhoAmI from "../test/fragments";
 
 
 class App extends Component {
@@ -140,6 +141,7 @@ class App extends Component {
 		return (
 
 			<div className='app'>
+				{/*<BootstrapTest></BootstrapTest>*/}
 				{/*<WhoAmI name={'alex'} surname={'smith'} myLink={'www.vk.com'}/>*/}
 				<AppInfo employees={employees} employeesOnIncrease={employeesOnIncrease}/>
 
