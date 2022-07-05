@@ -1,4 +1,5 @@
 import {Component} from "react";
+import React from "react";
 import nextId from "react-id-generator";
 
 import './app.css';
@@ -12,6 +13,18 @@ import BootstrapTest from "../test/bootstrap-test";
 import WhoAmI from "../test/fragments";
 
 
+const DynamicGreatings = (props) => {
+	return (
+		<div className={'mb-3 p-3 border border-' + props.color}>
+			{
+				React.Children.map(props.children, function (child) {
+					return React.cloneElement(child, {className: 'shadow p-3 m-3 border rounded'})
+				})
+			}
+		</div>
+	)
+}
+
 class App extends Component {
 	constructor(props) {
 		super(props);
@@ -19,7 +32,7 @@ class App extends Component {
 			data: [
 				{name: 'Linch', salary: 11000, increase: false, like: true, id: nextId()},
 				{name: 'John', salary: 3000, increase: true, like: false, id: nextId()},
-				{name: 'Albert', salary: 5000, increase: false, like:false, id: nextId()}
+				{name: 'Albert', salary: 5000, increase: false, like: false, id: nextId()}
 			],
 			visibleData: [],
 			term: '',
@@ -132,7 +145,7 @@ class App extends Component {
 	// }
 
 	render() {
-		const { data, term, filterArg} = this.state;
+		const {data, term, filterArg} = this.state;
 		const employees = this.state.data.length;
 		const employeesOnIncrease = this.state.data.filter(item => item.increase).length;
 
@@ -141,7 +154,19 @@ class App extends Component {
 		return (
 
 			<div className='app'>
-				{/*<BootstrapTest></BootstrapTest>*/}
+
+				<BootstrapTest left={
+					<DynamicGreatings color={'primary'}>
+						<h2>This is the dynamic greatings!</h2>
+						<h2>This is the second dynamic greatings!</h2>
+						<h2>This is the third dynamic greatings!</h2>
+					</DynamicGreatings>
+				}
+				               right={
+					               <DynamicGreatings color={'primary'}>
+						               <h2>"Right!"</h2>
+					               </DynamicGreatings>
+				               }/>
 				{/*<WhoAmI name={'alex'} surname={'smith'} myLink={'www.vk.com'}/>*/}
 				<AppInfo employees={employees} employeesOnIncrease={employeesOnIncrease}/>
 
@@ -149,14 +174,14 @@ class App extends Component {
 					<SearchPanel onUpdateSearch={this.onUpdateSearch}/>
 					<AppFilter filterEmployee={this.filterEmployee}
 					           data={visibleData}
-							   filterArgChange={this.filterArgChange}/>
+					           filterArgChange={this.filterArgChange}/>
 				</div>
 				<div>
 					<EmployeesList data={visibleData}
 					               onDelete={this.deleteItem}
-								   onToggleIncrease={this.onToggleIncrease}
-								   onToggleRise={this.onToggleRise}
-								   changeSalary={this.changeSalary}
+					               onToggleIncrease={this.onToggleIncrease}
+					               onToggleRise={this.onToggleRise}
+					               changeSalary={this.changeSalary}
 					/>
 				</div>
 				<div>
