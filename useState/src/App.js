@@ -1,4 +1,5 @@
-import {Component, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
+import React from "react";
 import {Container} from 'react-bootstrap';
 import './App.css';
 import Calc from "./calc";
@@ -70,7 +71,7 @@ const Slider = (props) => {
 	// }
 
 	function logging() {
-		console.log('log');
+		// console.log('log');
 	}
 
 	useEffect(() => {
@@ -112,6 +113,63 @@ const Slider = (props) => {
 }
 
 
+const Bank = async () => {
+	const [value, setValue] = useState();
+	const [valute, setValute] = useState('');
+
+	let valuta = document.querySelector('#valute');
+
+
+	const address = `https://www.cbr-xml-daily.ru/daily_json.js`;
+	const getResource = async (url) => {
+		let res = await fetch(url);
+		if (!res.ok) {
+			throw new Error(`Could not fetch ${url}, status ${res.status}`);
+		}
+		return await res.json();
+	}
+	const getValue = async (url, valLit) => {
+		const res = await getResource(url);
+		console.log(res.Valute[valLit].Value)
+		return res.Valute[valLit].Value;
+	}
+
+	useEffect(() => {
+		console.log('effect getValue')
+		setValue(getValue(address, valute));
+		console.log(value);
+	}, [valute]);
+
+	useEffect(() => {
+		console.log('effect getValuTTTTTe!')
+		setValute(valuta.value)
+		console.log(valute);
+	}, [valute]);
+
+
+	return (
+		<div className="app">
+			<div>
+				<select name="valute" id="valute" onChange={() => setValute(valuta.value)}>
+					<option value="EUR">EUR</option>
+					<option value="USD">USD</option>
+				</select>
+				<div>
+					1 {valute}: {value} рублей
+				</div>
+			</div>
+		</div>
+	)
+}
+
+
+// 1) Начальное значение счетчика должно передаваться через props
+// 2) INC и DEC увеличивают и уменьшают счетчик соответственно на 1. Без ограничений, но можете добавить границу в
+// -50/50. По достижению границы ничего не происходит 3) RND изменяет счетчик в случайное значение от -50 до 50.
+// Конструкцию можете прогуглить за 20 секунд :) Не зависит от предыдущего состояния 4) RESET сбрасывает счетчик в 0
+// или в начальное значение из пропсов. Выберите один из вариантов
+
+
 function App() {
 	const [slider, setSlider] = useState(true);
 
@@ -120,6 +178,7 @@ function App() {
 			<button onClick={() => setSlider(!slider)}>Click!</button>
 			{slider ? <Slider/> : null}{/* ! useState useEffect*/}
 			<Calc/> {/* ! useState*/}
+			<Bank/>
 		</>
 	);
 }
