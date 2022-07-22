@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import React from "react";
 import {Container} from 'react-bootstrap';
 import './App.css';
@@ -74,6 +74,14 @@ const Slider = (props) => {
 		// console.log('log');
 	}
 
+	const getSomeImages = () => {
+		console.log('fetching');
+		return [
+			"https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
+			"https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg"
+		]
+	}
+
 	useEffect(() => {
 		console.log('effect');
 		document.title = `Slide: ${slide}`;
@@ -89,9 +97,18 @@ const Slider = (props) => {
 	return (
 		<Container>
 			<div className="slider w-50 m-auto">
-				<img className="d-block w-100"
-				     src="https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg"
-				     alt="slide"/>
+
+				{
+					getSomeImages().map((url, i) => {
+						return (
+							<img className="d-block w-100"
+							     src={url}
+							     key={i}
+							     alt="slide"/>
+						)
+					})
+				}
+
 				<div className="text-center mt-5">Active slide {slide} <br/> {autoplay ? 'auto' : null} </div>
 				<div className="buttons mt-3">
 					<button
@@ -113,11 +130,15 @@ const Slider = (props) => {
 }
 
 
-const Bank = async () => {
-	const [value, setValue] = useState();
-	const [valute, setValute] = useState('');
+const Bank = () => {
 
-	let valuta = document.querySelector('#valute');
+	const [valueUSD, setValueUSD] = useState();
+	const [valueEUR, setValueEUR] = useState();
+	const [valute, setValute] = useState();
+	const valueRef = useRef(document.querySelector('#valute'));
+	const onValueChange = () => {
+		setValute(valueRef.current.value);
+	};
 
 
 	const address = `https://www.cbr-xml-daily.ru/daily_json.js`;
@@ -128,35 +149,36 @@ const Bank = async () => {
 		}
 		return await res.json();
 	}
-	const getValue = async (url, valLit) => {
+	const getValueUSD = async (url) => {
 		const res = await getResource(url);
-		console.log(res.Valute[valLit].Value)
-		return res.Valute[valLit].Value;
+		setValueUSD(res['Valute']['USD'].Value);
+	}
+
+	const getValueEUR = async (url) => {
+		const res = await getResource(url);
+		setValueEUR(res['Valute']['EUR'].Value);
 	}
 
 	useEffect(() => {
-		console.log('effect getValue')
-		setValue(getValue(address, valute));
-		console.log(value);
-	}, [valute]);
+		onValueChange();
+	})
 
 	useEffect(() => {
-		console.log('effect getValuTTTTTe!')
-		setValute(valuta.value)
-		console.log(valute);
-	}, [valute]);
+		getValueUSD(address);
+		getValueEUR(address);
+	}, [valueEUR, valueEUR]);
 
 
 	return (
 		<div className="app">
 			<div>
-				<select name="valute" id="valute" onChange={() => setValute(valuta.value)}>
-					<option value="EUR">EUR</option>
+				<select ref={valueRef} name="valute" id="valute" onChange={onValueChange}>
 					<option value="USD">USD</option>
+					<option value="EUR">EUR</option>
 				</select>
-				<div>
-					1 {valute}: {value} рублей
-				</div>
+
+				<p>1 {valute} = {valute === 'USD' ? valueUSD : valueEUR} рублей</p>
+
 			</div>
 		</div>
 	)
