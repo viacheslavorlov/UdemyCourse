@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useRef, useState, useCallback} from 'react';
 import React from "react";
 import {Container} from 'react-bootstrap';
 import './App.css';
@@ -71,16 +71,17 @@ const Slider = (props) => {
 	// }
 
 	function logging() {
-		// console.log('log');
+		console.log('log');
 	}
+	const getSomeImages = useCallback(() => {
+			console.log('fetching');
+			return [
+				"https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
+				"https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg"
+			]
+		}, []
+	);
 
-	const getSomeImages = () => {
-		console.log('fetching');
-		return [
-			"https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
-			"https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg"
-		]
-	}
 
 	useEffect(() => {
 		console.log('effect');
@@ -98,16 +99,18 @@ const Slider = (props) => {
 		<Container>
 			<div className="slider w-50 m-auto">
 
-				{
-					getSomeImages().map((url, i) => {
-						return (
-							<img className="d-block w-100"
-							     src={url}
-							     key={i}
-							     alt="slide"/>
-						)
-					})
-				}
+				{/*{*/}
+				{/*	getSomeImages().map((url, i) => {*/}
+				{/*		return (*/}
+				{/*			<img className="d-block w-100"*/}
+				{/*			     src={url}*/}
+				{/*			     key={i}*/}
+				{/*			     alt="slide"/>*/}
+				{/*		)*/}
+				{/*	})*/}
+				{/*}*/}
+
+				<Slide getSomeImages={getSomeImages}/>
 
 				<div className="text-center mt-5">Active slide {slide} <br/> {autoplay ? 'auto' : null} </div>
 				<div className="buttons mt-3">
@@ -129,17 +132,44 @@ const Slider = (props) => {
 	)
 }
 
+const Slide = ({getSomeImages}) => {
+	const [images, setImages] = useState([]);
+	useEffect(() => {
+		setImages(getSomeImages());
+	}, [getSomeImages]);
+	return (
+		<>
+			{images.map((url, i) => {
+				return (
+					<img className="d-block w-100"
+					     src={url}
+					     key={i}
+					     alt="slide"/>
+				)
+			})}
+		</>
+	)
+}
 
-const Bank = () => {
 
-	const [valueUSD, setValueUSD] = useState();
-	const [valueEUR, setValueEUR] = useState();
-	const [valute, setValute] = useState();
+const Bank = (props) => {
+	const [amount, setAmount] = useState(props.amount)
+	const [value, setValue] = useState(0);
+	const [valute, setValute] = useState('USD');
 	const valueRef = useRef(document.querySelector('#valute'));
 	const onValueChange = () => {
 		setValute(valueRef.current.value);
 	};
+	const amountRef = useRef();
 
+	const onAmountChange = () => {
+		if (amountRef.current.value > 0) {
+			setAmount(amountRef.current.value);
+		} else {
+			setAmount(1);
+			amountRef.current.value = 1;
+		}
+	}
 
 	const address = `https://www.cbr-xml-daily.ru/daily_json.js`;
 	const getResource = async (url) => {
@@ -149,36 +179,28 @@ const Bank = () => {
 		}
 		return await res.json();
 	}
-	const getValueUSD = async (url) => {
+	const getValue = async (url) => {
 		const res = await getResource(url);
-		setValueUSD(res['Valute']['USD'].Value);
-	}
-
-	const getValueEUR = async (url) => {
-		const res = await getResource(url);
-		setValueEUR(res['Valute']['EUR'].Value);
+		setValue((res.Valute[valute].Value * amount).toFixed(2));
 	}
 
 	useEffect(() => {
-		onValueChange();
-	})
-
-	useEffect(() => {
-		getValueUSD(address);
-		getValueEUR(address);
-	}, [valueEUR, valueEUR]);
-
+		getValue(address);
+	}, [valute, amount]);
 
 	return (
 		<div className="app">
 			<div>
+				<h1>Валютный калькулятор</h1>
+				<label htmlFor="amount">Количество: </label>
+				<input ref={amountRef} id="amount" type="number" onChange={onAmountChange}/>
+				<label htmlFor="valute">Выбор валюты: </label>
 				<select ref={valueRef} name="valute" id="valute" onChange={onValueChange}>
 					<option value="USD">USD</option>
 					<option value="EUR">EUR</option>
 				</select>
-
-				<p>1 {valute} = {valute === 'USD' ? valueUSD : valueEUR} рублей</p>
-
+				<br/>
+				<div>{amount} {valute} = {value} рублей</div>
 			</div>
 		</div>
 	)
@@ -200,7 +222,7 @@ function App() {
 			<button onClick={() => setSlider(!slider)}>Click!</button>
 			{slider ? <Slider/> : null}{/* ! useState useEffect*/}
 			<Calc/> {/* ! useState*/}
-			<Bank/>
+			<Bank amount={2}/>  {/* ! useState  ! useEffect*/}
 		</>
 	);
 }
