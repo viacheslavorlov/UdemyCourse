@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState, useCallback} from 'react';
+import {useEffect, useRef, useState, useCallback, useMemo} from 'react';
 import React from "react";
 import {Container} from 'react-bootstrap';
 import './App.css';
@@ -37,6 +37,10 @@ import Calc from "./calc";
 // this.changeSlide(1)}>+1</button> <button className="btn btn-primary me-2" onClick={this.toggleAutoplay}>toggle
 // autoplay</button> </div> </div> </Container> ) } }
 
+const countTotal = (num) => {
+	console.log('counting');
+	return num + 10;
+}
 
 const calcValue = () => {
 	console.log('random');
@@ -94,25 +98,19 @@ const Slider = (props) => {
 		}
 	}, [slide]);
 
+	const total = useMemo(() => {
+		return countTotal(slide);
+	}, [slide]);
+
 
 	return (
 		<Container>
 			<div className="slider w-50 m-auto">
 
-				{/*{*/}
-				{/*	getSomeImages().map((url, i) => {*/}
-				{/*		return (*/}
-				{/*			<img className="d-block w-100"*/}
-				{/*			     src={url}*/}
-				{/*			     key={i}*/}
-				{/*			     alt="slide"/>*/}
-				{/*		)*/}
-				{/*	})*/}
-				{/*}*/}
-
 				<Slide getSomeImages={getSomeImages}/>
 
 				<div className="text-center mt-5">Active slide {slide} <br/> {autoplay ? 'auto' : null} </div>
+				<div className="text-center mt-5">Total count of slides: {total}</div>
 				<div className="buttons mt-3">
 					<button
 						className="btn btn-primary me-2"
