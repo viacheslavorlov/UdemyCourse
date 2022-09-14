@@ -1,8 +1,12 @@
-import {useEffect, useRef, useState, useCallback, useMemo} from 'react';
+import {useEffect, useRef, useState, useCallback, useMemo, memo} from 'react';
 import React from "react";
 import {Container} from 'react-bootstrap';
 import './App.css';
 import Calc from "./calc";
+import Bank from "./components/bank/Bank";
+import Slider from "./components/Slider/Slider";
+import NamesList from "./components/NamesList/NamesList";
+
 // class Slider extends Component {
 //
 //     constructor(props) {
@@ -37,138 +41,74 @@ import Calc from "./calc";
 // this.changeSlide(1)}>+1</button> <button className="btn btn-primary me-2" onClick={this.toggleAutoplay}>toggle
 // autoplay</button> </div> </div> </Container> ) } }
 
-const countTotal = (num) => {
-	console.log('counting');
-	return num + 10;
+// 1) Начальное значение счетчика должно передаваться через props
+// 2) INC и DEC увеличивают и уменьшают счетчик соответственно на 1. Без ограничений, но можете добавить границу в
+// -50/50. По достижению границы ничего не происходит 3) RND изменяет счетчик в случайное значение от -50 до 50.
+// Конструкцию можете прогуглить за 20 секунд :) Не зависит от предыдущего состояния 4) RESET сбрасывает счетчик в 0
+// или в начальное значение из пропсов. Выберите один из вариантов
+
+
+function useInputWithValidate(initialValue) {
+	const [value, setValue] = useState(initialValue)
+
+	const onChange = event => {
+		setValue(event.target.value);
+	}
+	const validateInput = () => value.search(/\d/) >= 0;
+	return {value, onChange, validateInput};
 }
 
-const calcValue = () => {
-	console.log('random');
+function propsCompare(prev, next) {
 
-	return +(Math.random() * (50 - -50) + -50).toFixed(0);
+	return prev.fixedProp.name === next.fixedProp.name;
 }
 
-const Slider = (props) => {
+const Form = memo((props) => {
 
-	const [slide, setSlide] = useState(0); //вызова функции быть не должно, либо callback функции с
-	// аргументами - засоряет память
-	const [autoplay, setAutoplay] = useState(false);
+	const input = useInputWithValidate('');
+	const textarea = useInputWithValidate('');
 
-	function changeSlide(i) {
-		setSlide(slide => slide + i);
-	}
-
-	function toogleAutoplay() {
-		setAutoplay(autoplay => !autoplay);
-	}
-
-	// ! вариант с объектом состояния - нежелательно использовать, так как сильно усложняет логику и требует
-	// усиленного контролья за иммутабельностью
-	// const [state, setState] = useState({slide: 0, autoplay: false});
-	//
-	// function changeSlide(i) {
-	// 	setState(state => ({...state, slide: state.slide + i}));
-	// }
-	//
-	// function toogleAutoplay() {
-	// 	setState(state => ({...state, autoplay: !state.autoplay}));
-	// }
-
-	function logging() {
-		console.log('log');
-	}
-	const getSomeImages = useCallback(() => {
-			console.log('fetching');
-			return [
-				"https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
-				"https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg"
-			]
-		}, []
-	);
-
-
-	useEffect(() => {
-		console.log('effect');
-		document.title = `Slide: ${slide}`;
-
-		window.addEventListener('click', logging);
-
-		return () => {
-			window.removeEventListener("click", logging);
-		}
-	}, [slide]);
-
-	const total = useMemo(() => {
-		return countTotal(slide);
-	}, [slide]);
-
-
+	const color = input.validateInput() ? 'text-danger' : null;
+	console.log('form render')
 	return (
 		<Container>
-			<div className="slider w-50 m-auto">
-
-				<Slide getSomeImages={getSomeImages}/>
-
-				<div className="text-center mt-5">Active slide {slide} <br/> {autoplay ? 'auto' : null} </div>
-				<div className="text-center mt-5">Total count of slides: {total}</div>
-				<div className="buttons mt-3">
-					<button
-						className="btn btn-primary me-2"
-						onClick={() => changeSlide(-1)}>-1
-					</button>
-					<button
-						className="btn btn-primary me-2"
-						onClick={() => changeSlide(1)}>+1
-					</button>
-					<button
-						className="btn btn-primary me-2"
-						onClick={toogleAutoplay}>toggle autoplay
-					</button>
+			<form className="w-50 border mt-5 p-3 m-auto">
+				<div className="mb-3">
+					<input type="text" value={`${input.value} / ${textarea.value}`} className="form-control" readOnly/>
+					<label htmlFor="exampleFormControlInput1" className="form-label mt-3">Email address</label>
+					<input type="email"
+					       onChange={input.onChange}
+					       value={props.fixedProp.name}
+					       className={`form-control ${color}`}
+					       id="exampleFormControlInput1" placeholder="name@example.com"/>
 				</div>
-			</div>
+				<div className="mb-3">
+					<label htmlFor="exampleFormControlTextarea" className="form-label">Example Textarea</label>
+					<textarea
+						id="exampleFormControlTextarea"
+						className="form-control"
+						onChange={textarea.onChange}
+						value={textarea.value}
+						rows="3"></textarea>
+				</div>
+
+			</form>
 		</Container>
 	)
-}
-
-const Slide = ({getSomeImages}) => {
-	const [images, setImages] = useState([]);
-	useEffect(() => {
-		setImages(getSomeImages());
-	}, [getSomeImages]);
-	return (
-		<>
-			{images.map((url, i) => {
-				return (
-					<img className="d-block w-100"
-					     src={url}
-					     key={i}
-					     alt="slide"/>
-				)
-			})}
-		</>
-	)
-}
+}, propsCompare)
 
 
-const Bank = (props) => {
-	const [amount, setAmount] = useState(props.amount)
-	const [value, setValue] = useState(0);
-	const [valute, setValute] = useState('USD');
-	const valueRef = useRef(document.querySelector('#valute'));
-	const onValueChange = () => {
-		setValute(valueRef.current.value);
-	};
-	const amountRef = useRef();
-
-	const onAmountChange = () => {
-		if (amountRef.current.value > 0) {
-			setAmount(amountRef.current.value);
-		} else {
-			setAmount(1);
-			amountRef.current.value = 1;
-		}
+function App() {
+	const fixedProp = {
+		name: 'none',
+		surname: 'none'
 	}
+	const [slider, setSlider] = useState(true);
+	const [value, setValue] = useState(0);
 
+	const [amount, setAmount] = useState(0)
+
+	const [valute, setValute] = useState('USD');
 	const address = `https://www.cbr-xml-daily.ru/daily_json.js`;
 	const getResource = async (url) => {
 		let res = await fetch(url);
@@ -180,47 +120,22 @@ const Bank = (props) => {
 	const getValue = async (url) => {
 		const res = await getResource(url);
 		setValue((res.Valute[valute].Value * amount).toFixed(2));
+		fixedProp.name = value;
 	}
-
 	useEffect(() => {
-		getValue(address);
+		getValue(address)
 	}, [valute, amount]);
 
 	return (
-		<div className="app">
-			<div>
-				<h1>Валютный калькулятор</h1>
-				<label htmlFor="amount">Количество: </label>
-				<input ref={amountRef} id="amount" type="number" onChange={onAmountChange}/>
-				<label htmlFor="valute">Выбор валюты: </label>
-				<select ref={valueRef} name="valute" id="valute" onChange={onValueChange}>
-					<option value="USD">USD</option>
-					<option value="EUR">EUR</option>
-				</select>
-				<br/>
-				<div>{amount} {valute} = {value} рублей</div>
-			</div>
-		</div>
-	)
-}
-
-
-// 1) Начальное значение счетчика должно передаваться через props
-// 2) INC и DEC увеличивают и уменьшают счетчик соответственно на 1. Без ограничений, но можете добавить границу в
-// -50/50. По достижению границы ничего не происходит 3) RND изменяет счетчик в случайное значение от -50 до 50.
-// Конструкцию можете прогуглить за 20 секунд :) Не зависит от предыдущего состояния 4) RESET сбрасывает счетчик в 0
-// или в начальное значение из пропсов. Выберите один из вариантов
-
-
-function App() {
-	const [slider, setSlider] = useState(true);
-
-	return (
 		<>
-			<button onClick={() => setSlider(!slider)}>Click!</button>
-			{slider ? <Slider/> : null}{/* ! useState useEffect*/}
-			<Calc/> {/* ! useState*/}
-			<Bank amount={2}/>  {/* ! useState  ! useEffect*/}
+			{/*<NamesList/>*/}
+
+			{/*<button onClick={() => setSlider(!slider)}>Click!</button>*/}
+			{/*{slider ? <Slider/> : null}/!* ! useState useEffect*!/*/}
+			{/*<Calc/> /!* ! useState*!/*/}
+			<Bank amount={amount} value={value} valute={valute} setAmount={setAmount} setValue={setValue} setValute={setValute}/>
+			{/* ! useState !useRef  ! useEffect*/}
+			<Form fixedProp={fixedProp}/>
 		</>
 	);
 }
