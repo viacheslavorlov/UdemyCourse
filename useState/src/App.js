@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState, useCallback, useMemo, memo} from 'react';
+import {useEffect, useRef, useState, useCallback, useMemo, memo, PureComponent, Component} from 'react';
 import React from "react";
 import {Container} from 'react-bootstrap';
 import './App.css';
@@ -48,60 +48,100 @@ import NamesList from "./components/NamesList/NamesList";
 // или в начальное значение из пропсов. Выберите один из вариантов
 
 
-function useInputWithValidate(initialValue) {
-	const [value, setValue] = useState(initialValue)
+// function useInputWithValidate(initialValue) {
+// 	const [value, setValue] = useState(initialValue)
+//
+// 	const onChange = event => {
+// 		setValue(event.target.value);
+// 	}
+// 	const validateInput = () => value.search(/\d/) >= 0;
+// 	return {value, onChange, validateInput};
+// }
 
-	const onChange = event => {
-		setValue(event.target.value);
-	}
-	const validateInput = () => value.search(/\d/) >= 0;
-	return {value, onChange, validateInput};
-}
+//***мемоизация функционального компонента***
+// function propsCompare(prev, next) {
+//
+// 	return prev.fixedProp.name === next.fixedProp.name;
+// }
 
-function propsCompare(prev, next) {
+const Form = (props) => {
 
-	return prev.fixedProp.name === next.fixedProp.name;
-}
-
-const Form = memo((props) => {
-
-	const input = useInputWithValidate('');
-	const textarea = useInputWithValidate('');
-
-	const color = input.validateInput() ? 'text-danger' : null;
 	console.log('form render')
-	return (
-		<Container>
-			<form className="w-50 border mt-5 p-3 m-auto">
-				<div className="mb-3">
-					<input type="text" value={`${input.value} / ${textarea.value}`} className="form-control" readOnly/>
-					<label htmlFor="exampleFormControlInput1" className="form-label mt-3">Email address</label>
-					<input type="email"
-					       onChange={input.onChange}
-					       value={props.fixedProp.name}
-					       className={`form-control ${color}`}
-					       id="exampleFormControlInput1" placeholder="name@example.com"/>
-				</div>
-				<div className="mb-3">
-					<label htmlFor="exampleFormControlTextarea" className="form-label">Example Textarea</label>
-					<textarea
-						id="exampleFormControlTextarea"
-						className="form-control"
-						onChange={textarea.onChange}
-						value={textarea.value}
-						rows="3"></textarea>
-				</div>
 
-			</form>
-		</Container>
-	)
-}, propsCompare)
+		return (
+			<Container>
+				<form className="w-50 border mt-5 p-3 m-auto">
+					<div className="mb-3">
+						<input type="text" value={`${props.name} / ${props.email}`} className="form-control"
+						       readOnly/>
+						<label htmlFor="exampleFormControlInput1" className="form-label mt-3">Email address</label>
+						<input type="email"
+						       // onChange={event => this.setState((state) => ({...state, name: event.target.value}))}
+						       value={props.name}
+						       className={`form-control`}
+						       id="exampleFormControlInput1" placeholder="name@example.com"/>
+					</div>
+					<div className="mb-3">
+						<label htmlFor="exampleFormControlTextarea" className="form-label">Example Textarea</label>
+						<textarea
+							id="exampleFormControlTextarea"
+							className="form-control"
+							// onChange={event => this.setState((state) => ({...state, email: event.target.value}))}
+							value={props.email}
+							rows="3"></textarea>
+					</div>
+
+				</form>
+			</Container>
+		)
+}
+
+// * мумоизация классового компонента через PureComponent (происходит автоматически)
+// class Form extends PureComponent {
+//
+//
+// 	render() {
+//
+// 		// input = useInputWithValidate('');
+// 		// textarea = useInputWithValidate('');
+//
+// 		// const color = input.validateInput() ? 'text-danger' : null;
+// 		console.log('form render')
+//
+// 		return (
+// 			<Container>
+// 				<form className="w-50 border mt-5 p-3 m-auto">
+// 					<div className="mb-3">
+// 						<input type="text" value={`${this.props.name} / ${this.props.email}`} className="form-control"
+// 						       readOnly/>
+// 						<label htmlFor="exampleFormControlInput1" className="form-label mt-3">Email address</label>
+// 						<input type="email"
+// 						       // onChange={event => this.setState((state) => ({...state, name: event.target.value}))}
+// 						       value={this.props.name}
+// 						       className={`form-control`}
+// 						       id="exampleFormControlInput1" placeholder="name@example.com"/>
+// 					</div>
+// 					<div className="mb-3">
+// 						<label htmlFor="exampleFormControlTextarea" className="form-label">Example Textarea</label>
+// 						<textarea
+// 							id="exampleFormControlTextarea"
+// 							className="form-control"
+// 							// onChange={event => this.setState((state) => ({...state, email: event.target.value}))}
+// 							value={this.props.email}
+// 							rows="3"></textarea>
+// 					</div>
+//
+// 				</form>
+// 			</Container>
+// 		)
+// 	}
+// }
 
 
 function App() {
 	const fixedProp = {
 		name: 'none',
-		surname: 'none'
+		surname: 'none2'
 	}
 	const [slider, setSlider] = useState(true);
 	const [value, setValue] = useState(0);
@@ -135,7 +175,7 @@ function App() {
 			{/*<Calc/> /!* ! useState*!/*/}
 			<Bank amount={amount} value={value} valute={valute} setAmount={setAmount} setValue={setValue} setValute={setValute}/>
 			{/* ! useState !useRef  ! useEffect*/}
-			<Form fixedProp={fixedProp}/>
+			<Form name={fixedProp.name} email={fixedProp.surname}/>
 		</>
 	);
 }
