@@ -1,8 +1,12 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState, useCallback, useMemo, memo, PureComponent, Component} from 'react';
 import React from "react";
 import {Container} from 'react-bootstrap';
 import './App.css';
 import Calc from "./calc";
+import Bank from "./components/bank/Bank";
+import Slider from "./components/Slider/Slider";
+import NamesList from "./components/NamesList/NamesList";
+
 // class Slider extends Component {
 //
 //     constructor(props) {
@@ -37,132 +41,6 @@ import Calc from "./calc";
 // this.changeSlide(1)}>+1</button> <button className="btn btn-primary me-2" onClick={this.toggleAutoplay}>toggle
 // autoplay</button> </div> </div> </Container> ) } }
 
-
-const calcValue = () => {
-    console.log('random');
-
-    return +(Math.random() * (50 - -50) + -50).toFixed(0);
-}
-
-const Slider = (props) => {
-
-    const [slide, setSlide] = useState(0); //вызова функции быть не должно, либо callback функции с
-    // аргументами - засоряет память
-    const [autoplay, setAutoplay] = useState(false);
-
-    function changeSlide(i) {
-        setSlide(slide => slide + i);
-    }
-
-    function toogleAutoplay() {
-        setAutoplay(autoplay => !autoplay);
-    }
-
-    // ! вариант с объектом состояния - нежелательно использовать, так как сильно усложняет логику и требует
-    // усиленного контролья за иммутабельностью
-    // const [state, setState] = useState({slide: 0, autoplay: false});
-    //
-    // function changeSlide(i) {
-    // 	setState(state => ({...state, slide: state.slide + i}));
-    // }
-    //
-    // function toogleAutoplay() {
-    // 	setState(state => ({...state, autoplay: !state.autoplay}));
-    // }
-
-    function logging() {
-        // console.log('log');
-    }
-
-    useEffect(() => {
-        console.log('effect');
-        document.title = `Slide: ${slide}`;
-
-        window.addEventListener('click', logging);
-
-        return () => {
-            window.removeEventListener("click", logging);
-        }
-    }, [slide]);
-
-
-    return (
-        <Container>
-            <div className="slider w-50 m-auto">
-                <img className="d-block w-100"
-                     src="https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg"
-                     alt="slide"/>
-                <div className="text-center mt-5">Active slide {slide} <br/> {autoplay ? 'auto' : null} </div>
-                <div className="buttons mt-3">
-                    <button
-                        className="btn btn-primary me-2"
-                        onClick={() => changeSlide(-1)}>-1
-                    </button>
-                    <button
-                        className="btn btn-primary me-2"
-                        onClick={() => changeSlide(1)}>+1
-                    </button>
-                    <button
-                        className="btn btn-primary me-2"
-                        onClick={toogleAutoplay}>toggle autoplay
-                    </button>
-                </div>
-            </div>
-        </Container>
-    )
-}
-
-
-const Bank = () => {
-    const [value, setValue] = useState('');
-    const [valute, setValute] = useState('');
-
-    let valuta = document.querySelector('#valute');
-
-    const address = `https://www.cbr-xml-daily.ru/daily_json.js`;
-    const getResource = async (url) => {
-        let res = await fetch(url);
-        if (!res.ok) {
-            throw new Error(`Could not fetch ${url}, status ${res.status}`);
-        }
-        return await res.json();
-    }
-    const getValue = async (url, valLit) => {
-        const res = await getResource(url);
-        // setValue(res.Valute[valLit].Value);
-        const response = await res.Valute
-        console.log('VALUE', value, 'TYPE', typeof value)
-        return response;
-    }
-
-    useEffect(() => {
-        console.log('effect getValue')
-        getValue(address, valute).then(res=>setValue(res));
-    }, [value, setValue]);
-    useEffect(() => {
-        setValute(document.querySelector('#valute').value);
-    })
-
-
-
-    return (
-        <div className="app">
-            <div>
-                <select name="valute" id="valute" onChange={() => {
-                    setValute(valuta.value);
-                }}>
-                    <option value="EUR">EUR</option>
-                    <option value="USD">USD</option>
-                </select>
-                <div>
-                    1 {valute}: {value[valute].Value} рублей
-                </div>
-            </div>
-        </div>
-    )
-}
-
-
 // 1) Начальное значение счетчика должно передаваться через props
 // 2) INC и DEC увеличивают и уменьшают счетчик соответственно на 1. Без ограничений, но можете добавить границу в
 // -50/50. По достижению границы ничего не происходит 3) RND изменяет счетчик в случайное значение от -50 до 50.
@@ -170,17 +48,136 @@ const Bank = () => {
 // или в начальное значение из пропсов. Выберите один из вариантов
 
 
-function App() {
-    const [slider, setSlider] = useState(true);
+// function useInputWithValidate(initialValue) {
+// 	const [value, setValue] = useState(initialValue)
+//
+// 	const onChange = event => {
+// 		setValue(event.target.value);
+// 	}
+// 	const validateInput = () => value.search(/\d/) >= 0;
+// 	return {value, onChange, validateInput};
+// }
 
-    return (
-        <>
-            <button onClick={() => setSlider(!slider)}>Click!</button>
-            {slider ? <Slider/> : null}{/* ! useState useEffect*/}
-            <Calc/> {/* ! useState*/}
-            <Bank/>
-        </>
-    );
+//***мемоизация функционального компонента***
+// function propsCompare(prev, next) {
+//
+// 	return prev.fixedProp.name === next.fixedProp.name;
+// }
+
+const Form = (props) => {
+
+	console.log('form render')
+
+		return (
+			<Container>
+				<form className="w-50 border mt-5 p-3 m-auto">
+					<div className="mb-3">
+						<input type="text" value={`${props.name} / ${props.email}`} className="form-control"
+						       readOnly/>
+						<label htmlFor="exampleFormControlInput1" className="form-label mt-3">Email address</label>
+						<input type="email"
+						       // onChange={event => this.setState((state) => ({...state, name: event.target.value}))}
+						       value={props.name}
+						       className={`form-control`}
+						       id="exampleFormControlInput1" placeholder="name@example.com"/>
+					</div>
+					<div className="mb-3">
+						<label htmlFor="exampleFormControlTextarea" className="form-label">Example Textarea</label>
+						<textarea
+							id="exampleFormControlTextarea"
+							className="form-control"
+							// onChange={event => this.setState((state) => ({...state, email: event.target.value}))}
+							value={props.email}
+							rows="3"></textarea>
+					</div>
+
+				</form>
+			</Container>
+		)
+}
+
+// * мумоизация классового компонента через PureComponent (происходит автоматически)
+// class Form extends PureComponent {
+//
+//
+// 	render() {
+//
+// 		// input = useInputWithValidate('');
+// 		// textarea = useInputWithValidate('');
+//
+// 		// const color = input.validateInput() ? 'text-danger' : null;
+// 		console.log('form render')
+//
+// 		return (
+// 			<Container>
+// 				<form className="w-50 border mt-5 p-3 m-auto">
+// 					<div className="mb-3">
+// 						<input type="text" value={`${this.props.name} / ${this.props.email}`} className="form-control"
+// 						       readOnly/>
+// 						<label htmlFor="exampleFormControlInput1" className="form-label mt-3">Email address</label>
+// 						<input type="email"
+// 						       // onChange={event => this.setState((state) => ({...state, name: event.target.value}))}
+// 						       value={this.props.name}
+// 						       className={`form-control`}
+// 						       id="exampleFormControlInput1" placeholder="name@example.com"/>
+// 					</div>
+// 					<div className="mb-3">
+// 						<label htmlFor="exampleFormControlTextarea" className="form-label">Example Textarea</label>
+// 						<textarea
+// 							id="exampleFormControlTextarea"
+// 							className="form-control"
+// 							// onChange={event => this.setState((state) => ({...state, email: event.target.value}))}
+// 							value={this.props.email}
+// 							rows="3"></textarea>
+// 					</div>
+//
+// 				</form>
+// 			</Container>
+// 		)
+// 	}
+// }
+
+
+function App() {
+	const fixedProp = {
+		name: 'none',
+		surname: 'none2'
+	}
+	const [slider, setSlider] = useState(true);
+	const [value, setValue] = useState(0);
+
+	const [amount, setAmount] = useState(0)
+
+	const [valute, setValute] = useState('USD');
+	const address = `https://www.cbr-xml-daily.ru/daily_json.js`;
+	const getResource = async (url) => {
+		let res = await fetch(url);
+		if (!res.ok) {
+			throw new Error(`Could not fetch ${url}, status ${res.status}`);
+		}
+		return await res.json();
+	}
+	const getValue = async (url) => {
+		const res = await getResource(url);
+		setValue((res.Valute[valute].Value * amount).toFixed(2));
+		fixedProp.name = value;
+	}
+	useEffect(() => {
+		getValue(address)
+	}, [valute, amount]);
+
+	return (
+		<>
+			{/*<NamesList/>*/}
+
+			{/*<button onClick={() => setSlider(!slider)}>Click!</button>*/}
+			{/*{slider ? <Slider/> : null}/!* ! useState useEffect*!/*/}
+			{/*<Calc/> /!* ! useState*!/*/}
+			<Bank amount={amount} value={value} valute={valute} setAmount={setAmount} setValue={setValue} setValute={setValute}/>
+			{/* ! useState !useRef  ! useEffect*/}
+			<Form name={fixedProp.name} email={fixedProp.surname}/>
+		</>
+	);
 }
 
 export default App;
