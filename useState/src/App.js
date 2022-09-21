@@ -39,127 +39,127 @@ import Calc from "./calc";
 
 
 const calcValue = () => {
-	console.log('random');
+    console.log('random');
 
-	return +(Math.random() * (50 - -50) + -50).toFixed(0);
+    return +(Math.random() * (50 - -50) + -50).toFixed(0);
 }
 
 const Slider = (props) => {
 
-	const [slide, setSlide] = useState(0); //вызова функции быть не должно, либо callback функции с
-	// аргументами - засоряет память
-	const [autoplay, setAutoplay] = useState(false);
+    const [slide, setSlide] = useState(0); //вызова функции быть не должно, либо callback функции с
+    // аргументами - засоряет память
+    const [autoplay, setAutoplay] = useState(false);
 
-	function changeSlide(i) {
-		setSlide(slide => slide + i);
-	}
+    function changeSlide(i) {
+        setSlide(slide => slide + i);
+    }
 
-	function toogleAutoplay() {
-		setAutoplay(autoplay => !autoplay);
-	}
+    function toogleAutoplay() {
+        setAutoplay(autoplay => !autoplay);
+    }
 
-	// ! вариант с объектом состояния - нежелательно использовать, так как сильно усложняет логику и требует
-	// усиленного контролья за иммутабельностью
-	// const [state, setState] = useState({slide: 0, autoplay: false});
-	//
-	// function changeSlide(i) {
-	// 	setState(state => ({...state, slide: state.slide + i}));
-	// }
-	//
-	// function toogleAutoplay() {
-	// 	setState(state => ({...state, autoplay: !state.autoplay}));
-	// }
+    // ! вариант с объектом состояния - нежелательно использовать, так как сильно усложняет логику и требует
+    // усиленного контролья за иммутабельностью
+    // const [state, setState] = useState({slide: 0, autoplay: false});
+    //
+    // function changeSlide(i) {
+    // 	setState(state => ({...state, slide: state.slide + i}));
+    // }
+    //
+    // function toogleAutoplay() {
+    // 	setState(state => ({...state, autoplay: !state.autoplay}));
+    // }
 
-	function logging() {
-		// console.log('log');
-	}
+    function logging() {
+        // console.log('log');
+    }
 
-	useEffect(() => {
-		console.log('effect');
-		document.title = `Slide: ${slide}`;
+    useEffect(() => {
+        console.log('effect');
+        document.title = `Slide: ${slide}`;
 
-		window.addEventListener('click', logging);
+        window.addEventListener('click', logging);
 
-		return () => {
-			window.removeEventListener("click", logging);
-		}
-	}, [slide]);
+        return () => {
+            window.removeEventListener("click", logging);
+        }
+    }, [slide]);
 
 
-	return (
-		<Container>
-			<div className="slider w-50 m-auto">
-				<img className="d-block w-100"
-				     src="https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg"
-				     alt="slide"/>
-				<div className="text-center mt-5">Active slide {slide} <br/> {autoplay ? 'auto' : null} </div>
-				<div className="buttons mt-3">
-					<button
-						className="btn btn-primary me-2"
-						onClick={() => changeSlide(-1)}>-1
-					</button>
-					<button
-						className="btn btn-primary me-2"
-						onClick={() => changeSlide(1)}>+1
-					</button>
-					<button
-						className="btn btn-primary me-2"
-						onClick={toogleAutoplay}>toggle autoplay
-					</button>
-				</div>
-			</div>
-		</Container>
-	)
+    return (
+        <Container>
+            <div className="slider w-50 m-auto">
+                <img className="d-block w-100"
+                     src="https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg"
+                     alt="slide"/>
+                <div className="text-center mt-5">Active slide {slide} <br/> {autoplay ? 'auto' : null} </div>
+                <div className="buttons mt-3">
+                    <button
+                        className="btn btn-primary me-2"
+                        onClick={() => changeSlide(-1)}>-1
+                    </button>
+                    <button
+                        className="btn btn-primary me-2"
+                        onClick={() => changeSlide(1)}>+1
+                    </button>
+                    <button
+                        className="btn btn-primary me-2"
+                        onClick={toogleAutoplay}>toggle autoplay
+                    </button>
+                </div>
+            </div>
+        </Container>
+    )
 }
 
 
-const Bank = async () => {
-	const [value, setValue] = useState();
-	const [valute, setValute] = useState('');
+const Bank = () => {
+    const [value, setValue] = useState('');
+    const [valute, setValute] = useState('');
 
-	let valuta = document.querySelector('#valute');
+    let valuta = document.querySelector('#valute');
 
+    const address = `https://www.cbr-xml-daily.ru/daily_json.js`;
+    const getResource = async (url) => {
+        let res = await fetch(url);
+        if (!res.ok) {
+            throw new Error(`Could not fetch ${url}, status ${res.status}`);
+        }
+        return await res.json();
+    }
+    const getValue = async (url, valLit) => {
+        const res = await getResource(url);
+        // setValue(res.Valute[valLit].Value);
+        const response = await res.Valute
+        console.log('VALUE', value, 'TYPE', typeof value)
+        return response;
+    }
 
-	const address = `https://www.cbr-xml-daily.ru/daily_json.js`;
-	const getResource = async (url) => {
-		let res = await fetch(url);
-		if (!res.ok) {
-			throw new Error(`Could not fetch ${url}, status ${res.status}`);
-		}
-		return await res.json();
-	}
-	const getValue = async (url, valLit) => {
-		const res = await getResource(url);
-		console.log(res.Valute[valLit].Value)
-		return res.Valute[valLit].Value;
-	}
-
-	useEffect(() => {
-		console.log('effect getValue')
-		setValue(getValue(address, valute));
-		console.log(value);
-	}, [valute]);
-
-	useEffect(() => {
-		console.log('effect getValuTTTTTe!')
-		setValute(valuta.value)
-		console.log(valute);
-	}, [valute]);
+    useEffect(() => {
+        console.log('effect getValue')
+        getValue(address, valute).then(res=>setValue(res));
+    }, [value, setValue]);
+    useEffect(() => {
+        setValute(document.querySelector('#valute').value);
+    })
 
 
-	return (
-		<div className="app">
-			<div>
-				<select name="valute" id="valute" onChange={() => setValute(valuta.value)}>
-					<option value="EUR">EUR</option>
-					<option value="USD">USD</option>
-				</select>
-				<div>
-					1 {valute}: {value} рублей
-				</div>
-			</div>
-		</div>
-	)
+
+    return (
+        <div className="app">
+            <div>
+                <select name="valute" id="valute" onChange={() => {
+                    setValute(valuta.value);
+                }}>
+                    <option value="EUR">EUR</option>
+                    <option value="USD">USD</option>
+                </select>
+                <div>
+                    1 {valute}: {value[valute].Value} рублей
+                </div>
+            </div>
+        </div>
+    )
 }
 
 
@@ -171,16 +171,16 @@ const Bank = async () => {
 
 
 function App() {
-	const [slider, setSlider] = useState(true);
+    const [slider, setSlider] = useState(true);
 
-	return (
-		<>
-			<button onClick={() => setSlider(!slider)}>Click!</button>
-			{slider ? <Slider/> : null}{/* ! useState useEffect*/}
-			<Calc/> {/* ! useState*/}
-			<Bank/>
-		</>
-	);
+    return (
+        <>
+            <button onClick={() => setSlider(!slider)}>Click!</button>
+            {slider ? <Slider/> : null}{/* ! useState useEffect*/}
+            <Calc/> {/* ! useState*/}
+            <Bank/>
+        </>
+    );
 }
 
 export default App;
