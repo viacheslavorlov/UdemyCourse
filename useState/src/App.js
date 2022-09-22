@@ -170,12 +170,12 @@ function App() {
 		<>
 			{/*<NamesList/>*/}
 
-			{/*<button onClick={() => setSlider(!slider)}>Click!</button>*/}
-			{/*{slider ? <Slider/> : null}/!* ! useState useEffect*!/*/}
+			<button onClick={() => setSlider(!slider)}>Click!</button>
+			{slider ? <Slider initial={500}/> : null}{/* ! useState useEffect*/}
 			{/*<Calc/> /!* ! useState*!/*/}
-			<Bank amount={amount} value={value} valute={valute} setAmount={setAmount} setValue={setValue} setValute={setValute}/>
+			{/*<Bank amount={amount} value={value} valute={valute} setAmount={setAmount} setValue={setValue} setValute={setValute}/>*/}
 			{/* ! useState !useRef  ! useEffect*/}
-			<Form name={fixedProp.name} email={fixedProp.surname}/>
+			{/*<Form name={fixedProp.name} email={fixedProp.surname}/>*/}
 		</>
 	);
 }

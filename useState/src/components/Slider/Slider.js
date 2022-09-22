@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState, useReducer} from "react";
 import {Container} from "react-bootstrap";
 
 const countTotal = (num) => {
@@ -12,19 +12,33 @@ const calcValue = () => {
 	return +(Math.random() * (50 - -50) + -50).toFixed(0);
 }
 
-const Slider = (props) => {
+function reducer (state, action) {
+	switch (action.type) {
+		case 'toggle':
+			return {autoplay: !state.autoplay};
+		case 'slow':
+			return {autoplay: 300};
+		case 'fast':
+			return {autoplay: 700};
+		default:
+			throw new Error();
+	}
+}
+
+const Slider = ({initial}) => {
 
 	const [slide, setSlide] = useState(0); //вызова функции быть не должно, либо callback функции с
 	// аргументами - засоряет память
-	const [autoplay, setAutoplay] = useState(false);
+	// const [autoplay, setAutoplay] = useState(false);
+	const [autoplay, dispatch] = useReducer(reducer, initial, init);
 
 	function changeSlide(i) {
 		setSlide(slide => slide + i);
 	}
-
-	function toogleAutoplay() {
-		setAutoplay(autoplay => !autoplay);
+	function init(initial) {
+		return  {autoplay: initial}
 	}
+
 
 	// ! вариант с объектом состояния - нежелательно использовать, так как сильно усложняет логику и требует
 	// усиленного контролья за иммутабельностью
@@ -74,7 +88,7 @@ const Slider = (props) => {
 
 				<Slide getSomeImages={getSomeImages}/>
 
-				<div className="text-center mt-5">Active slide {slide} <br/> {autoplay ? 'auto' : null} </div>
+				<div className="text-center mt-5">Active slide {slide} <br/> {autoplay.autoplay ? 'auto' : null} </div>
 				<div className="text-center mt-5">Total count of slides: {total}</div>
 				<div className="buttons mt-3">
 					<button
@@ -87,7 +101,15 @@ const Slider = (props) => {
 					</button>
 					<button
 						className="btn btn-primary me-2"
-						onClick={toogleAutoplay}>toggle autoplay
+						onClick={() => dispatch({type: 'toggle'})}>toggle autoplay
+					</button>
+					<button
+						className="btn btn-primary me-2"
+						onClick={() => dispatch({type: 'slow'})}>slow autoplay
+					</button>
+					<button
+						className="btn btn-primary me-2"
+						onClick={() => dispatch({type: 'fast'})}>fast autoplay
 					</button>
 				</div>
 			</div>
