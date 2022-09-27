@@ -1,4 +1,15 @@
-import {useEffect, useRef, useState, useCallback, useMemo, memo, PureComponent, Component} from 'react';
+import {
+	useEffect,
+	useRef,
+	useState,
+	useCallback,
+	useMemo,
+	memo,
+	PureComponent,
+	Component,
+	createContext,
+	useContext
+} from 'react';
 import React from "react";
 import {Container} from 'react-bootstrap';
 import './App.css';
@@ -6,6 +17,48 @@ import Calc from "./calc";
 import Bank from "./components/bank/Bank";
 import Slider from "./components/Slider/Slider";
 import NamesList from "./components/NamesList/NamesList";
+
+
+// * useContext
+
+
+const dataContext = createContext({
+	name: 'none',
+	surname: 'none2'
+});
+
+// const {Provider, Consumer} = dataContext;
+//
+//
+//
+// class InputComponent extends Component {
+// 	render () {
+// 		return (
+// 			// <Consumer>
+// 			// 	{
+// 			// 		value => {
+// 			// 			return (
+// 			// 				<input
+// 			// 					type="email"
+// 			// 					value={value.surname}
+// 			// 					className="form-control"
+// 			// 					placeholder="name@example.com"/>
+// 			// 			)
+// 			// 		}
+// 			// 	}
+// 			//
+// 			// </Consumer>
+//
+// 			<input
+// 				type="email"
+// 				value={this.context.surname}
+// 				className="form-control"
+// 				placeholder="name@example.com"/>
+// 		)
+// 	}
+// }
+//
+// InputComponent.contextType = dataContext;
 
 // class Slider extends Component {
 //
@@ -64,16 +117,23 @@ import NamesList from "./components/NamesList/NamesList";
 // 	return prev.fixedProp.name === next.fixedProp.name;
 // }
 
+
+const InputComponent = () => {
+	const context = useContext(dataContext);
+	return (
+		<input type="email"
+		       value={context.surname}
+				className="form-control"
+		       placeholder="name@example.com"/>
+	)
+}
 const Form = (props) => {
-
-	console.log('form render')
-
+	console.log('form render');
 		return (
 			<Container>
 				<form className="w-50 border mt-5 p-3 m-auto">
 					<div className="mb-3">
-						<input type="text" value={`${props.name} / ${props.email}`} className="form-control"
-						       readOnly/>
+						<InputComponent/>
 						<label htmlFor="exampleFormControlInput1" className="form-label mt-3">Email address</label>
 						<input type="email"
 						       // onChange={event => this.setState((state) => ({...state, name: event.target.value}))}
@@ -96,7 +156,7 @@ const Form = (props) => {
 		)
 }
 
-// * мумоизация классового компонента через PureComponent (происходит автоматически)
+// * мемоизация классового компонента через PureComponent (происходит автоматически)
 // class Form extends PureComponent {
 //
 //
@@ -138,11 +198,16 @@ const Form = (props) => {
 // }
 
 
+
+
+
+
+
 function App() {
-	const fixedProp = {
+	const [fixedProp, setFixedProp] = useState({
 		name: 'none',
 		surname: 'none2'
-	}
+	});
 	const [slider, setSlider] = useState(true);
 	const [value, setValue] = useState(0);
 
@@ -160,13 +225,14 @@ function App() {
 	const getValue = async (url) => {
 		const res = await getResource(url);
 		setValue((res.Valute[valute].Value * amount).toFixed(2));
-		fixedProp.name = value;
+		// setFixedProp((fixedProp) => ({...fixedProp, name: value}))
 	}
 	useEffect(() => {
 		getValue(address)
 	}, [valute, amount]);
 
 	return (
+		// <Provider value={fixedProp}>
 		<>
 			{/*<NamesList/>*/}
 
@@ -177,6 +243,7 @@ function App() {
 			{/* ! useState !useRef  ! useEffect*/}
 			<Form name={fixedProp.name} email={fixedProp.surname}/>
 		</>
+		// </Provider>
 	);
 }
 
